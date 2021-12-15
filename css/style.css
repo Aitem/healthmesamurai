@@ -176,3 +176,15 @@ body, #root
 .my-drop-marker {
     border: 10px solid blue;
 }
+
+.stat-row.red {
+    color: red;
+}
+
+.stat-row.yellow {
+    color: yellow;
+}
+
+.stat-row.green {
+    color: lightgreen;
+}
