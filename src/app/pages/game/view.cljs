@@ -34,6 +34,7 @@
        (prn "Apply drug:" drug)
        (prn "For pocik :" pocik)
      {:db       db
+      :dispatch  [::model/apply-drug pocik drug]
       #_:dispatch
       #_(if (= source-drop-zone-id drop-zone-id)
           ;;built-in dispatch for re-ordering elements in a drop-zone

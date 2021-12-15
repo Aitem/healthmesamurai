@@ -50,15 +50,20 @@
      {:dispatch-n  init-droppable
       :db (assoc db :patients pts)})))
 
-(rf/reg-sub
- ::aidbox
- (fn [db _]
-   (:aidbox db)))
+(rf/reg-sub ::aidbox (fn [db _]   (:aidbox db)))
+(rf/reg-sub ::patients (fn [db _] (:patients db)))
 
 (rf/reg-sub
  index-page
- :<- [:xhr/response ::pts]
+ :<- [::patients]
  :<- [::aidbox]
- (fn [[resp aids] _]
-   {:pts (patients-map resp)
+ (fn [[pts aids] _]
+   {:pts pts
     :aidbox aids}))
+
+(rf/reg-event-fx
+ ::apply-drug
+ (fn [{db :db} [_ pt drug]]
+   (prn "apply drug")
+   {:db (update-in db [:patients (:id pt) :balance] - (:price drug))}
+   ))
