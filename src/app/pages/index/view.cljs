@@ -1,5 +1,6 @@
 (ns app.pages.index.view
   (:require [zframes.pages :as pages]
+            [re-frame.core :as rf]
             [app.pages.index.model :as model]))
 
 
@@ -19,6 +20,7 @@
       [:input ]]]
     [:br]
     [:div.rpgui-center
-     [:button.rpgui-button.rpgui-cursor-default [:p "Начать"]]]
-    [:br]]
-   ))
+     [:button.rpgui-button.rpgui-cursor-default
+      {:on-click #(rf/dispatch [::model/start-game])}
+      [:p "Начать"]]]
+    [:br]]))

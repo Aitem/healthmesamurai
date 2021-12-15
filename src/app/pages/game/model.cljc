@@ -7,11 +7,7 @@
 (rf/reg-event-fx
  index-page
  (fn [{db :db} [pid phase params]]
-   {:json/fetch [{:uri "/Patient"
-                   :req-id pid}
-                 {:uri "/$devices"
-                  :req-id ::devices}
-                 ]}))
+   ))
 
 (rf/reg-sub
  index-page
