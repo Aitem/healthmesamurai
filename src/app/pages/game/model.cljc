@@ -18,4 +18,19 @@
  index-page
  :<- [:xhr/response ::pts]
  (fn [pts _]
-   {:pts (->> pts :data :entry (map :resource))}))
+   {:pts (->> pts :data :entry (map :resource))
+    :aidbox [{:id      "111"
+              :name    "Insulin"
+              :img     "./img/insulin.png"
+              :price   2
+              :effects {:diarea      -1
+                        :sugar        3
+                        :bacteria     1}}
+             {:id      "22"
+              :name    "Amoxicillin"
+              :img     "./img/amoxicillin.png"
+              :price   2
+              :effects {:temperature  1
+                        :diarea      -1
+                        :bacteria     2}}
+             ]}))

@@ -30,7 +30,14 @@ body, #root
     position: initial !important;
 }
 
+.med-img {
+    width: 60px;
+    height: 60px;
+}
 
+.drag {
+    margin-right: 10px;
+}
 .aidbox-grid {
     /* display: grid; */
     /* width: 800px; */
