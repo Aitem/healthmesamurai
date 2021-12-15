@@ -8,8 +8,10 @@
    [:div.flex.pt-10
     [:img.pt-monitor {:src "./img/monitor.png"}]
     [:div.grow-1
-     [:div [:span.pt-hp [:img.pt-icn {:src "./img/heart.png"}] "8/10"]]
-     [:div [:span.pt-mn [:img.pt-icn {:src "./img/coin_gold.png"}] "20/20"]]]]
+     [:div [:span.pt-hp [:img.pt-icn {:src "./img/heart.png"}]
+            (:health pt)  "/10"]]
+     [:div [:span.pt-mn [:img.pt-icn {:src "./img/coin_gold.png"}]
+            (:balance pt) "/20"]]]]
    [:div.pt-stats
     [:div [:span [:img.pt-icn {:src "./img/temp.png"}]      "+1"]]
     [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}] "+1"]]

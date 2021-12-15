@@ -34,6 +34,8 @@
 (defn mk-patient-batch-req [{id :id :as practitioner}]
   {:request {:method "POST" :url "/Patient"}
    :resource {:name [{:given [(patient-name)]}]
+              :balance 20
+              :health  10
               :generalPractitioner [{:id id :resourceType "Practitioner"}]}})
 
 
