@@ -38,21 +38,23 @@
 
 
 (defn drag-golden [pt obs]
-  [:div.rpgui-container.framed-golden.pos-initial.rpgui-cursor-grab-open.drag.p-8.pt
-   [:h3 (get-in pt [:name 0 :given 0])]
-   [:div.flex.pt-10
-    [:img.pt-monitor {:src "./img/monitor.png"}]
-    [:div.grow-1
-     [:div [:span.pt-hp [:img.pt-icn {:src "./img/heart.png"}]
-            (:health pt)  "/10"]]
-     [:div [:span.pt-mn [:img.pt-icn {:src "./img/coin_gold.png"}]
-            (:balance pt) "/20"]]]]
-   [:div.pt-stats
-    [:div [:span [:img.pt-icn {:src "./img/thermometer.png"}]   "5/5 temperature"]]
-    [:div [:span [:img.pt-icn {:src "./img/tonometer.png"}] "3/5 pressure"]]
-    [:div [:span [:img.pt-icn {:src "./img/sugar.png"}]         "2/5 sugar"]]
-    [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}]     "2/5 bacteria"]]
-    [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}]      "4/5 diarea"]]]])
+  (let [o (group-by #(get-in % [:code :coding 0 :code]) obs)]
+    (prn "->> " o)
+    [:div.rpgui-container.framed-golden.pos-initial.rpgui-cursor-grab-open.drag.p-8.pt
+     [:h3 (get-in pt [:name 0 :given 0])]
+     [:div.flex.pt-10
+      [:img.pt-monitor {:src "./img/monitor.png"}]
+      [:div.grow-1
+       [:div [:span.pt-hp [:img.pt-icn {:src "./img/heart.png"}]
+              (:health pt)  "/10"]]
+       [:div [:span.pt-mn [:img.pt-icn {:src "./img/coin_gold.png"}]
+              (:balance pt) "/20"]]]]
+     [:div.pt-stats
+      [:div [:span [:img.pt-icn {:src "./img/thermometer.png"}]   (get-in (get o "temperature") [0 :value :Quantity :value]) "/5 temperature"]]
+      [:div [:span [:img.pt-icn {:src "./img/tonometer.png"}]     (get-in (get o "pressure")    [0 :value :Quantity :value]) "/5 pressure"]]
+      [:div [:span [:img.pt-icn {:src "./img/sugar.png"}]         (get-in (get o "sugar")       [0 :value :Quantity :value]) "/5 sugar"]]
+      [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}]     (get-in (get o "bacteria")    [0 :value :Quantity :value]) "/5 bacteria"]]
+      [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}]      (get-in (get o "diarrhea")    [0 :value :Quantity :value]) "/5 diarea"]]]]))
 
 (defn plusify [t] (if (> t 0 ) (str "+" t) t))
 
