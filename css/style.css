@@ -172,3 +172,7 @@ body, #root
   height: 0px;
   width: 0px;
 }
+
+.my-drop-marker {
+    border: 10px solid blue;
+}
