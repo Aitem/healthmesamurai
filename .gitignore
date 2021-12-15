@@ -1,4 +1,8 @@
 .package.json
+database-data
+.DS_Store
+.nrepl-port
+jars
 .cpcache
 package-lock.json
 node_modules
