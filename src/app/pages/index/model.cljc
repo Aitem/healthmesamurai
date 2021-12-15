@@ -38,6 +38,21 @@
               :health  10
               :generalPractitioner [{:id id :resourceType "Practitioner"}]}})
 
+(defn stat-builder [patient stat]
+  {:request {:method "post" :url "/Observation"}
+   :resource {:subject {:id (:id patient) :resourceType "Patient"}
+              :status "final"
+              :code {:coding [{:code   stat
+                               :system "urn:observation"}]}
+              :value {:Quantity {:value (- 5 (rand-int 3))}}}})
+
+(defn mk-patient-stats-request
+  [patient]
+  [(stat-builder patient "temperature")
+   (stat-builder patient "sugar")
+   (stat-builder patient "pressure")
+   (stat-builder patient "bacteria")
+   (stat-builder patient "diarrhea")])
 
 (rf/reg-event-fx
  ::prepare-patients
@@ -53,12 +68,15 @@
 
 (rf/reg-event-fx
  ::save-init-data
- (fn [{db :db} [evid {resp :data}]]
+ (fn [{_db :db} [_evid {resp :data}]]
    (let [pts (->> resp
                   :entry
-                  (map :resource)
-                  (filter #(= "Patient" (:resoruceType %))))]
-     {:dispatch [::run-game]})))
+                  (map :resource))]
+     {:json/fetch {:uri "/"
+                   :method :post
+                   :body {:resourceType "Bundle"
+                          :entry (mapcat mk-patient-stats-request pts)}
+                   :success {:event ::run-game}}})))
 
 (rf/reg-event-fx
  ::run-game

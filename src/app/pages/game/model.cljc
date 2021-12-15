@@ -38,7 +38,7 @@
   (->> resp :data :entry (map :resource)
        (reduce (fn [acc pt] (assoc acc (:id pt) pt)) {})))
 
-(def drag-zone-cfg {:drop-dispatch [:my-drop-dispatch] :drop-marker   :my-drop-marker})
+(def drag-zone-cfg {:drop-dispatch [:my-drop-dispatch] :drop-marker :my-drop-marker})
 
 (rf/reg-event-fx
  ::save-patients
