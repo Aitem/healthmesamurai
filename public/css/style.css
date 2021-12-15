@@ -16,7 +16,8 @@ body, #root
 
 .aidbox-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    width: 800px;
+    grid-template-columns: 1fr 1fr 1fr;
 }
 
 .game-grid {
@@ -77,7 +78,7 @@ body, #root
 }
 
 .left-bordur {
-    height: 400px;
+    min-height: 700px;
     width: 20px;
     background-size: 20px;
     background-image: url(/img/left-bordur.png);

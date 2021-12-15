@@ -33,27 +33,27 @@
      [:div.left-bordur]
      [:div.grow-1
       [:div.top-wall]
-      [:div.game-grid
-       [:div.top-90
-        [:img.blood {:src "/img/blood.png"}]
-        [:img.patient {:src "/img/patient.png"}]
-        [:img.koika {:src "/img/koika.png"}]
-        [:img.tumba {:src "/img/tumba.png"}]
-        [:img.wall {:src "/img/wall.png"}]
-        [:img.patient {:src "/img/patient.png"}]
-        [:img.koika {:src "/img/koika.png"}]
-        [:img.tumba {:src "/img/tumba.png"}]
-        [:img.wall {:src "/img/wall.png"}]
-        [:img.patient {:src "/img/patient.png"}]
-        [:img.koika {:src "/img/koika.png"}]]
-       [aidbox]
-       [:div
-        [:div.rpgui-progress.blue {:data-rpguitype "progress"}
-         [:div.rpgui-progress-track
-          [:div.rpgui-progress-fill.blue {:style {:width "20%"}}]]
-         [:div.rpgui-progress-left-edge]
-         [:div.rpgui-progress-right-edge]
-         ]]
-       ]]]
+      [:div.top-90
+       [:div.aidbox-grid [drag] [drag] [drag]]
+       [:img.blood {:src "/img/blood.png"}]
+       [:img.patient {:src "/img/patient.png"}]
+       [:img.koika {:src "/img/koika.png"}]
+       [:img.tumba {:src "/img/tumba.png"}]
+       [:img.wall {:src "/img/wall.png"}]
+       [:img.patient {:src "/img/patient.png"}]
+       [:img.koika {:src "/img/koika.png"}]
+       [:img.tumba {:src "/img/tumba.png"}]
+       [:img.wall {:src "/img/wall.png"}]
+       [:img.patient {:src "/img/patient.png"}]
+       [:img.koika {:src "/img/koika.png"}]]
+      ;;[aidbox]
+      [:div
+       [:div.rpgui-progress.blue {:data-rpguitype "progress"}
+        [:div.rpgui-progress-track
+         [:div.rpgui-progress-fill.blue {:style {:width "20%"}}]]
+        [:div.rpgui-progress-left-edge]
+        [:div.rpgui-progress-right-edge]
+        ]]
+      ]]
 
     [:br]]))
