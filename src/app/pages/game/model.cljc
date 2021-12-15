@@ -1,7 +1,8 @@
 (ns app.pages.game.model
   (:require [re-frame.core :as rf]
             [zframes.storage :as storage]
-            [zframes.pages :as pages]))
+            [zframes.pages :as pages]
+            [clojure.string :as str]))
 
 (def index-page ::index-page)
 
@@ -40,23 +41,42 @@
 
 (def drag-zone-cfg {:drop-dispatch [:my-drop-dispatch] :drop-marker :my-drop-marker})
 
+
+(rf/reg-event-db
+ ::save-obs
+ (fn [db [_ resp]]
+   (->> resp
+        :data
+        :entry
+        (map :resource)
+        (group-by #(get-in % [:subject :id]))
+        (assoc db :observations))))
+
+
 (rf/reg-event-fx
  ::save-patients
  (fn [{db :db} [_ resp]]
    (let [pts (patients-map resp)
          init-droppable (map  (fn [[k v]] [:dnd/initialize-drop-zone (keyword k) drag-zone-cfg]) pts)]
      {:dispatch-n  init-droppable
-      :db (assoc db :patients pts)})))
+      :db (assoc db :patients pts)
+      :json/fetch {:uri "/Observation"
+                   :params {:subject (str/join "," (keys pts))}
+                   :success {:event ::save-obs}}})))
 
-(rf/reg-sub ::aidbox (fn [db _]   (:aidbox db)))
+(rf/reg-sub ::aidbox (fn [db _] (:aidbox db)))
 (rf/reg-sub ::patients (fn [db _] (:patients db)))
+(rf/reg-sub ::observations (fn [db _] (:observations db)))
+
 
 (rf/reg-sub
  index-page
  :<- [::patients]
+ :<- [::observations]
  :<- [::aidbox]
- (fn [[pts aids] _]
+ (fn [[pts obs aids] _]
    {:pts pts
+    :obs obs
     :aidbox aids}))
 
 (rf/reg-event-fx

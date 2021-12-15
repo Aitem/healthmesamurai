@@ -34,26 +34,10 @@
        (prn "Apply drug:" drug)
        (prn "For pocik :" pocik)
      {:db       db
-      :dispatch  [::model/apply-drug pocik drug]
-      #_:dispatch
-      #_(if (= source-drop-zone-id drop-zone-id)
-          ;;built-in dispatch for re-ordering elements in a drop-zone
-          [:dnd/move-drop-zone-element drop-zone-id source-element-id dropped-position]
-
-          ;;Built-in dispatch for adding a drop-zone-element ('dropped-element') in a drop-zone.
-          ;;Our current logic is to just add a new entry to the drop-zone.
-          ;;Your requirement might be different.
-          #_[:dnd/add-drop-zone-element
-             drop-zone-id
-             {:id   (keyword (str (name source-element-id) "-dropped-" @last-id))
-              ;;The type key is the dispatch-value of the dndv/dropped-widget multi-method.
-              ;;thus, by means of multi-methods we can create any component we'd like.
-              :type :dropped-box
-              }
-             dropped-position])})))
+      :dispatch  [::model/apply-drug pocik drug]})))
 
 
-(defn drag-golden [pt]
+(defn drag-golden [pt obs]
   [:div.rpgui-container.framed-golden.pos-initial.rpgui-cursor-grab-open.drag.p-8.pt
    [:h3 (get-in pt [:name 0 :given 0])]
    [:div.flex.pt-10
@@ -106,8 +90,7 @@
  model/index-page
  (fn [{dv :d pts :pts medics :aidbox :as  page} _]
    (let [drag-box-state (rf/subscribe [:dnd/drag-box])]
-
-     (fn [{dv :d pts :pts medics :aidbox :as  page} _]
+     (fn [{dv :d pts :pts medics :aidbox obs :obs :as page} _]
 
        [:div.game.rpgui-container.framed.relative {:style {:padding "0"}}
        (when @drag-box-state [dndv/drag-box])
@@ -124,7 +107,7 @@
              [:div.flex
               (into [:<>]
                     (for [[k v] pts] ^{:key k}
-                      [dndv/drop-zone (keyword k) [drag-golden v]]))])
+                      [dndv/drop-zone (keyword k) [drag-golden v (get obs k)]]))])
            [:img.blood {:src "./img/blood.png"}]
            [:img.patient {:src "./img/patient.png"}]
            [:img.koika {:src "./img/koika.png"}]
