@@ -10,16 +10,13 @@
 
 (defmethod dndv/dropped-widget
  :my-drop-marker
- [{:keys [type id]}]
-  [:div.my-drop-marker "Some visual showing when dragged object is hovering over drop zone."])
+ [_]
+  [:span.my-drop-marker "Drop marker"])
+
 (defmethod dndv/dropped-widget
- :bluebox
- [{:keys [type id]}]
-  [:div.my-drop-marker "Some visual showing when dragged object is hovering over drop zone."])
-(defmethod dndv/dropped-widget
- :redbox
- [{:keys [type id]}]
-  [:div.my-drop-marker ])
+  :dropped-box
+  [{:keys [type id]}]
+  #_[:span.my-drop-marker ])
 
 (def last-id (r/atom 0)) ;;or use ie. (str (random-uuid))
 
@@ -27,37 +24,32 @@
  :my-drop-dispatch
  (fn [{db :db}
       [_
-       ;; the callback contains two vectors, of the source and of the target.
-       ;; Note the source-drop-zone-id, it's possible the dropped element actually comes from
-       ;; a drop-zone (ie. re-ordering within the drop-zone). In the example above, we have an external
-       ;; draggable, in which case source-drop-zone-id would be nil.
        [source-drop-zone-id source-element-id]
-       [drop-zone-id dropped-element-id dropped-position]]] ;;position = index in the list of dropped elements
+       [drop-zone-id dropped-element-id dropped-position]]]
+   ;;position = index in the list of dropped elements
+   (prn "=================" "zone" drop-zone-id  "element" source-element-id)
    (swap! last-id inc)
    {:db       db
-    :dispatch
-    ;;if the source drop-zone and target drop-zone is the same, it means we need to re-order the items
-    ;; (at least, in this example we want that, but what you want is completely up to you :-))
-    (if (= source-drop-zone-id drop-zone-id)
+    #_:dispatch
+    #_(if (= source-drop-zone-id drop-zone-id)
       ;;built-in dispatch for re-ordering elements in a drop-zone
       [:dnd/move-drop-zone-element drop-zone-id source-element-id dropped-position]
 
       ;;Built-in dispatch for adding a drop-zone-element ('dropped-element') in a drop-zone.
       ;;Our current logic is to just add a new entry to the drop-zone.
       ;;Your requirement might be different.
-      [:dnd/add-drop-zone-element
+      #_[:dnd/add-drop-zone-element
        drop-zone-id
        {:id   (keyword (str (name source-element-id) "-dropped-" @last-id))
         ;;The type key is the dispatch-value of the dndv/dropped-widget multi-method.
         ;;thus, by means of multi-methods we can create any component we'd like.
-        :type (if (odd? @last-id )
-                :bluebox
-                :redbox)}
+        :type :dropped-box
+        }
        dropped-position])}))
 
 
 (defn drag-golden [pt]
-  [:div.rpgui-container.framed-golden-2.pos-initial.rpgui-cursor-grab-open.drag.p-8.pt
+  [:div.rpgui-container.framed-golden.pos-initial.rpgui-cursor-grab-open.drag.p-8.pt
    [:h3 (get-in pt [:name 0 :given 0])]
    [:div.flex.pt-10
     [:img.pt-monitor {:src "./img/monitor.png"}]
@@ -76,7 +68,7 @@
 (defn plusify [t] (if (> t 0 ) (str "+" t) t))
 
 (defn drag [m]
-  [dndv/draggable (keyword (str "draggable-" (:id m)))
+  [dndv/draggable (keyword (:id m))
    [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable
     [:h3 (:name m)]
     [:div.flex
