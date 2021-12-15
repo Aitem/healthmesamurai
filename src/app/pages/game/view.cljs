@@ -36,10 +36,11 @@
      {:db       db
       :dispatch  [::model/apply-drug pocik drug]})))
 
+(defn stat-color [m]
+  (if (> m 2) "green" (if (> m 1) "yellow" "red")))
 
 (defn drag-golden [pt obs]
   (let [o (group-by #(get-in % [:code :coding 0 :code]) obs)]
-    (prn "->> " o)
     [:div.rpgui-container.framed-golden.pos-initial.rpgui-cursor-grab-open.drag.p-8.pt
      [:h3 (get-in pt [:name 0 :given 0])]
      [:div.flex.pt-10
@@ -50,11 +51,16 @@
        [:div [:span.pt-mn [:img.pt-icn {:src "./img/coin_gold.png"}]
               (:balance pt) "/20"]]]]
      [:div.pt-stats
-      [:div [:span [:img.pt-icn {:src "./img/thermometer.png"}]   (get-in (get o "temperature") [0 :value :Quantity :value]) "/5 temperature"]]
-      [:div [:span [:img.pt-icn {:src "./img/tonometer.png"}]     (get-in (get o "pressure")    [0 :value :Quantity :value]) "/5 pressure"]]
-      [:div [:span [:img.pt-icn {:src "./img/sugar.png"}]         (get-in (get o "sugar")       [0 :value :Quantity :value]) "/5 sugar"]]
-      [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}]     (get-in (get o "bacteria")    [0 :value :Quantity :value]) "/5 bacteria"]]
-      [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}]      (get-in (get o "diarrhea")    [0 :value :Quantity :value]) "/5 diarea"]]]]))
+      (let [m (get-in (get o "temperature") [0 :value :Quantity :value])]
+        [:div [:span.stat-row {:class (stat-color m)} [:img.pt-icn {:src "./img/thermometer.png"}]   m "/5 temperature"]])
+      (let [m (get-in (get o "pressure")    [0 :value :Quantity :value])]
+        [:div [:span.stat-row {:class (stat-color m)} [:img.pt-icn {:src "./img/tonometer.png"}]     m "/5 pressure"]])
+      (let [m (get-in (get o "sugar")       [0 :value :Quantity :value])]
+        [:div [:span.stat-row {:class (stat-color m)} [:img.pt-icn {:src "./img/sugar.png"}]         m "/5 sugar"]])
+      (let [m (get-in (get o "bacteria")    [0 :value :Quantity :value])]
+        [:div [:span.stat-row {:class (stat-color m)} [:img.pt-icn {:src "./img/orc_green.png"}]     m "/5 bacteria"]])
+      (let [m (get-in (get o "diarrhea")    [0 :value :Quantity :value])]
+        [:div [:span.stat-row {:class (stat-color m)} [:img.pt-icn {:src "./img/diarrhea.png"}]      m "/5 diarrhea"]])]]))
 
 (defn plusify [t] (if (> t 0 ) (str "+" t) t))
 
@@ -76,7 +82,7 @@
         [:div [:span [:img.pt-icn {:src "./img/sugar.png"}] (plusify t)]])
       (when-let [t (get-in m [:effects :bacteria])]
         [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}] (plusify t)]])
-      (when-let [t (get-in m [:effects :diarea])]
+      (when-let [t (get-in m [:effects :diarrhea])]
         [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}] (plusify t)]])
       
 
