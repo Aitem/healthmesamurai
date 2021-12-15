@@ -32,9 +32,9 @@ body, #root
 
 
 .aidbox-grid {
-    display: grid;
-    width: 800px;
-    grid-template-columns: 1fr 1fr 1fr;
+    /* display: grid; */
+    /* width: 800px; */
+    /* grid-template-columns: 1fr 1fr 1fr; */
 }
 
 .game-grid {

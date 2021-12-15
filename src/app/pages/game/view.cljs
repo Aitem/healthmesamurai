@@ -13,13 +13,11 @@
      [:div [:span.pt-mn [:img.pt-icn {:src "./img/coin_gold.png"}]
             (:balance pt) "/20"]]]]
    [:div.pt-stats
-    [:div [:span [:img.pt-icn {:src "./img/temp.png"}]      "+1"]]
-    [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}] "+1"]]
-    [:div [:span [:img.pt-icn {:src "./img/potion_red.png"}] "+3"]]
-    [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}] "+4"]]
-    [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}] "+1"]]]
-   ]
-  )
+    [:div [:span [:img.pt-icn {:src "./img/temp.png"}]       "5/5 temperature"]]
+    [:div [:span [:img.pt-icn {:src "./img/potion_red.png"}] "3/5 preasure"]]
+    [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}]  "2/5 sugar"]]
+    [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}]  "2/5 bacteria"]]
+    [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}]  "4/5 diarea"]]]])
 
 (defn drag []
   [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag
@@ -52,7 +50,7 @@
       [:div.top-wall]
       [:div.top-90
        (when (> (count pts) 1)
-         [:div.aidbox-grid
+         [:div.flex
           [drag-golden (nth pts 0)]
           [drag-golden (nth pts 1)]
           [drag-golden (nth pts 2)]
