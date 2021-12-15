@@ -19,36 +19,7 @@
 (defmethod dndv/dropped-widget
  :redbox
  [{:keys [type id]}]
-  [:div.my-drop-marker "Some visual showing when dragged object is hovering over drop zone."])
-
-
-(defn my-drop-zone []
-  [dndv/drop-zone :drop-zone-1 ;;:drop-zone-1 is a unique identifier
-   [:div {:style {:border "1px solid red" :height "100px"}}
-    "A custom body for the drop-zone (optional)"]])
-
-(defn my-draggable []
-  [dndv/draggable :draggable-1
-   [:span "i'm draggable."]])
-
-(defn my-panel []
-  (let [;;this state is necesary to determine if we need to show the drag-box
-        drag-box-state (rf/subscribe [:dnd/drag-box])]
-    ;;It's best not to put this here, but for conciseness it is done here.
-    ;;It should be called when loading the page with the dnd functionality.
-    ;;It prepares the app-db with some initial state.
-    (rf/dispatch [:dnd/initialize-drop-zone
-                  :drop-zone-1 ;;note, this key is the same as in my-drop-zone above.
-                  {:drop-dispatch [:my-drop-dispatch] ;;re-frame event handler that will be called when draggable is dropped on a drop-zone
-                   :drop-marker :my-drop-marker ;;multi-method dispatch-value for dnd/dropped-widget
-                  }])
-    (fn []
-      [:div
-        (when @drag-box-state [dndv/drag-box])
-
-        [my-draggable]
-
-        [my-drop-zone]])))
+  [:div.my-drop-marker ])
 
 (def last-id (r/atom 0)) ;;or use ie. (str (random-uuid))
 
@@ -105,6 +76,7 @@
 (defn plusify [t] (if (> t 0 ) (str "+" t) t))
 
 (defn drag [m]
+  [dndv/draggable (keyword (str "draggable-" (:id m)))
    [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable
     [:h3 (:name m)]
     [:div.flex
@@ -122,7 +94,7 @@
         [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}] (plusify t)]])
       (when-let [t (get-in m [:effects :diarea])]
         [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}] (plusify t)]])
-      ]]])
+      ]]]])
 
 (defn aidbox [med]
    [:div.rpgui-container.framed-golden.pos-initial.aidbox.flex
@@ -132,45 +104,55 @@
 
 (pages/reg-subs-page
  model/index-page
- (fn [{dv :d pts :pts medics :aidbox :as  page} _]
-   [:div.game.rpgui-container.framed.relative {:style {:padding "0"}}
+ (fn [page _]
+   (let [drag-box-state (rf/subscribe [:dnd/drag-box])]
+     (rf/dispatch [:dnd/initialize-drop-zone :drop-zone-1
+                   {:drop-dispatch [:my-drop-dispatch]
+                    :drop-marker   :my-drop-marker}])
+     (rf/dispatch [:dnd/initialize-drop-zone :drop-zone-2
+                   {:drop-dispatch [:my-drop-dispatch]
+                    :drop-marker   :my-drop-marker}])
+     (rf/dispatch [:dnd/initialize-drop-zone :drop-zone-3
+                   {:drop-dispatch [:my-drop-dispatch]
+                    :drop-marker   :my-drop-marker}])
+     (fn [{dv :d pts :pts medics :aidbox :as  page} _]
 
-    [my-panel]
+       [:div.game.rpgui-container.framed.relative {:style {:padding "0"}}
+       (when @drag-box-state [dndv/drag-box])
 
+        [:div.flex
+         [:div.top-left-bordur]
+         [:div.top-bordur.grow-1]]
+        [:div.flex
+         [:div.left-bordur]
+         [:div.grow-1
+          [:div.top-wall]
+          [:div.top-90
+           (when (> (count pts) 1)
+             [:div.flex
+              [dndv/drop-zone :drop-zone-1 [drag-golden (nth pts 0)]]
+              [dndv/drop-zone :drop-zone-2 [drag-golden (nth pts 1)]]
+              [dndv/drop-zone :drop-zone-3 [drag-golden (nth pts 2)]]
+              ])
+           [:img.blood {:src "./img/blood.png"}]
+           [:img.patient {:src "./img/patient.png"}]
+           [:img.koika {:src "./img/koika.png"}]
+           [:img.tumba {:src "./img/tumba.png"}]
+           [:img.wall {:src "./img/wall.png"}]
+           [:img.patient {:src "./img/patient.png"}]
+           [:img.koika {:src "./img/koika.png"}]
+           [:img.tumba {:src "./img/tumba.png"}]
+           [:img.wall {:src "./img/wall.png"}]
+           [:img.patient {:src "./img/patient.png"}]
+           [:img.koika {:src "./img/koika.png"}]]
+          [aidbox medics]
+          [:div
+           [:div.rpgui-progress.blue {:data-rpguitype "progress"}
+            [:div.rpgui-progress-track
+             [:div.rpgui-progress-fill.blue {:style {:width "20%"}}]]
+            [:div.rpgui-progress-left-edge]
+            [:div.rpgui-progress-right-edge]
+            ]]
+          ]]
 
-    [:div.flex
-     [:div.top-left-bordur]
-     [:div.top-bordur.grow-1]]
-    [:div.flex
-     [:div.left-bordur]
-     [:div.grow-1
-      [:div.top-wall]
-      [:div.top-90
-       (when (> (count pts) 1)
-         [:div.flex
-          [drag-golden (nth pts 0)]
-          [drag-golden (nth pts 1)]
-          [drag-golden (nth pts 2)]
-          ])
-       [:img.blood {:src "./img/blood.png"}]
-       [:img.patient {:src "./img/patient.png"}]
-       [:img.koika {:src "./img/koika.png"}]
-       [:img.tumba {:src "./img/tumba.png"}]
-       [:img.wall {:src "./img/wall.png"}]
-       [:img.patient {:src "./img/patient.png"}]
-       [:img.koika {:src "./img/koika.png"}]
-       [:img.tumba {:src "./img/tumba.png"}]
-       [:img.wall {:src "./img/wall.png"}]
-       [:img.patient {:src "./img/patient.png"}]
-       [:img.koika {:src "./img/koika.png"}]]
-      [aidbox medics]
-      [:div
-       [:div.rpgui-progress.blue {:data-rpguitype "progress"}
-        [:div.rpgui-progress-track
-         [:div.rpgui-progress-fill.blue {:style {:width "20%"}}]]
-        [:div.rpgui-progress-left-edge]
-        [:div.rpgui-progress-right-edge]
-        ]]
-      ]]
-
-    [:br]]))
+        [:br]]))))
