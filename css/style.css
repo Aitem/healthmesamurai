@@ -4,6 +4,23 @@ body, #root
     padding-top:20px;
     padding-bottom:20px;
 }
+.pt-icn {
+    width: 22px;
+    margin-right: 10px;
+}
+.pt-monitor {
+    width: 50px;
+    margin-right: 10px;
+}
+#app .pt-stats {
+    margin-top: 10px;
+}
+#app .pt {
+    margin-right: 10px;
+}
+#app .p-8 {
+    padding: 8px;
+}
 
 #app .relative {
     position: relative;
@@ -13,11 +30,18 @@ body, #root
     position: initial !important;
 }
 
+.med-img {
+    width: 60px;
+    height: 60px;
+}
 
+.drag {
+    margin-right: 10px;
+}
 .aidbox-grid {
-    display: grid;
-    width: 800px;
-    grid-template-columns: 1fr 1fr 1fr;
+    /* display: grid; */
+    /* width: 800px; */
+    /* grid-template-columns: 1fr 1fr 1fr; */
 }
 
 .game-grid {
@@ -112,4 +136,39 @@ body, #root
     min-width: 740px;
     max-width: 95%;
     margin: 0 auto;
+}
+
+.draggable, dropped-element {
+   cursor: move;
+   position: relative;
+}
+
+.draggable .drag-mask,
+.dropped-element .drag-mask {
+   position: absolute;
+   top: 0px;
+   left: 0px;
+   width: 0px;
+   height: 0px;
+   background-color: rgba(0,0,0,0.2);
+   z-index: 9999;
+}
+
+.drop-zone.highlight {
+   border: 1px solid #000;
+}
+
+.drop-marker {
+   width: 100%;
+   height: 4px;
+   margin-bottom: 5px;
+   background-color: black;
+}
+
+.drag-box {
+  position: fixed;
+  background-color: rgba(0,0,0,0.2);
+  z-index: 999;
+  height: 0px;
+  width: 0px;
 }
