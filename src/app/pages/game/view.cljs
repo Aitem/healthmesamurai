@@ -24,28 +24,32 @@
  :my-drop-dispatch
  (fn [{db :db}
       [_
-       [source-drop-zone-id source-element-id]
+       [source-drop-zone-id drug-id]
        [drop-zone-id dropped-element-id dropped-position]]]
    ;;position = index in the list of dropped elements
-   (prn "=================" "zone" drop-zone-id  "element" source-element-id)
-   (swap! last-id inc)
-   {:db       db
-    #_:dispatch
-    #_(if (= source-drop-zone-id drop-zone-id)
-      ;;built-in dispatch for re-ordering elements in a drop-zone
-      [:dnd/move-drop-zone-element drop-zone-id source-element-id dropped-position]
+   (prn "=================" "zone" drop-zone-id  "element" drug-id)
+   (let [drug (get-in db [:aidbox (name drug-id)])
+         pocik (get-in db [:patients (name drop-zone-id)])]
+       (swap! last-id inc)
+       (prn "Apply drug:" drug)
+       (prn "For pocik :" pocik)
+     {:db       db
+      #_:dispatch
+      #_(if (= source-drop-zone-id drop-zone-id)
+          ;;built-in dispatch for re-ordering elements in a drop-zone
+          [:dnd/move-drop-zone-element drop-zone-id source-element-id dropped-position]
 
-      ;;Built-in dispatch for adding a drop-zone-element ('dropped-element') in a drop-zone.
-      ;;Our current logic is to just add a new entry to the drop-zone.
-      ;;Your requirement might be different.
-      #_[:dnd/add-drop-zone-element
-       drop-zone-id
-       {:id   (keyword (str (name source-element-id) "-dropped-" @last-id))
-        ;;The type key is the dispatch-value of the dndv/dropped-widget multi-method.
-        ;;thus, by means of multi-methods we can create any component we'd like.
-        :type :dropped-box
-        }
-       dropped-position])}))
+          ;;Built-in dispatch for adding a drop-zone-element ('dropped-element') in a drop-zone.
+          ;;Our current logic is to just add a new entry to the drop-zone.
+          ;;Your requirement might be different.
+          #_[:dnd/add-drop-zone-element
+             drop-zone-id
+             {:id   (keyword (str (name source-element-id) "-dropped-" @last-id))
+              ;;The type key is the dispatch-value of the dndv/dropped-widget multi-method.
+              ;;thus, by means of multi-methods we can create any component we'd like.
+              :type :dropped-box
+              }
+             dropped-position])})))
 
 
 (defn drag-golden [pt]
@@ -67,7 +71,8 @@
 
 (defn plusify [t] (if (> t 0 ) (str "+" t) t))
 
-(defn drag [m]
+(defn drug [m]
+  (prn "drug id" (:id m))
   [dndv/draggable (keyword (:id m))
    [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable
     [:h3 (:name m)]
@@ -91,22 +96,14 @@
 (defn aidbox [med]
    [:div.rpgui-container.framed-golden.pos-initial.aidbox.flex
     (into [:<>]
-          (for [i med]  ^{:key (:id i)}
-            (drag i)))])
+          (for [[k i] med]  ^{:key (:id i)}
+            (drug i)))])
 
 (pages/reg-subs-page
  model/index-page
- (fn [page _]
+ (fn [{dv :d pts :pts medics :aidbox :as  page} _]
    (let [drag-box-state (rf/subscribe [:dnd/drag-box])]
-     (rf/dispatch [:dnd/initialize-drop-zone :drop-zone-1
-                   {:drop-dispatch [:my-drop-dispatch]
-                    :drop-marker   :my-drop-marker}])
-     (rf/dispatch [:dnd/initialize-drop-zone :drop-zone-2
-                   {:drop-dispatch [:my-drop-dispatch]
-                    :drop-marker   :my-drop-marker}])
-     (rf/dispatch [:dnd/initialize-drop-zone :drop-zone-3
-                   {:drop-dispatch [:my-drop-dispatch]
-                    :drop-marker   :my-drop-marker}])
+
      (fn [{dv :d pts :pts medics :aidbox :as  page} _]
 
        [:div.game.rpgui-container.framed.relative {:style {:padding "0"}}
@@ -122,10 +119,9 @@
           [:div.top-90
            (when (> (count pts) 1)
              [:div.flex
-              [dndv/drop-zone :drop-zone-1 [drag-golden (nth pts 0)]]
-              [dndv/drop-zone :drop-zone-2 [drag-golden (nth pts 1)]]
-              [dndv/drop-zone :drop-zone-3 [drag-golden (nth pts 2)]]
-              ])
+              (into [:<>]
+                    (for [[k v] pts] ^{:key k}
+                      [dndv/drop-zone (keyword k) [drag-golden v]]))])
            [:img.blood {:src "./img/blood.png"}]
            [:img.patient {:src "./img/patient.png"}]
            [:img.koika {:src "./img/koika.png"}]
