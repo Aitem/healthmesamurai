@@ -7,21 +7,19 @@
 
 
 (def aidbox
-  {"11" {:id      "11"
-         :name    "Insulin"
-         :img     "./img/insulin.png"
-         :price   2
-         :effects {:diarea      -1
-                   :sugar        3
-                   :bacteria     1}}
+  {"insulin"    {:name    "Insulin"
+                 :img     "./img/insulin.png"
+                 :price   2
+                 :effects {:diarea      -1
+                           :sugar        3
+                           :bacteria     1}}
 
-   "22" {:id      "22"
-         :name    "Amoxicillin"
-         :img     "./img/amoxicillin.png"
-         :price   2
-         :effects {:temperature  1
-                   :diarea      -1
-                   :bacteria     2}}})
+   "amoxicillin" {:name    "Amoxicillin"
+                  :img     "./img/amoxicillin.png"
+                  :price   5
+                  :effects {:temperature  1
+                            :diarea      -1
+                            :bacteria     2}}})
 
 (rf/reg-event-fx
  index-page
@@ -64,6 +62,10 @@
 (rf/reg-event-fx
  ::apply-drug
  (fn [{db :db} [_ pt drug]]
-   (prn "apply drug")
-   {:db (update-in db [:patients (:id pt) :balance] - (:price drug))}
-   ))
+   (if (< (:balance pt) (:price drug))
+     {:db db}
+     (let [patient (update pt :balance - (:price drug))]
+       {:db (assoc-in db [:patients (:id pt)] patient)
+        :json/fetch {:uri (str "/Patient/" (:id pt))
+                     :method :put
+                     :body patient}}))))

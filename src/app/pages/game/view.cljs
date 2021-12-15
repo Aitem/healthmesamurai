@@ -72,33 +72,35 @@
 
 (defn plusify [t] (if (> t 0 ) (str "+" t) t))
 
-(defn drug [m]
-  (prn "drug id" (:id m))
-  [dndv/draggable (keyword (:id m))
+(defn drug [id m]
+  [dndv/draggable (keyword id)
    [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable
     [:h3 (:name m)]
     [:div.flex
      [:div.rpgui-icon.empty-slot.tabl-ico
       [:img.med-img {:src (:img m)}]]
      [:div.grow-1
+      (when-let [t (get-in m [:price])]
+        [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}] "-" t]])
       (when-let [t (get-in m [:effects :temperature])]
-       [:div [:span [:img.pt-icn {:src "./img/thermometer.png"}] (plusify t)]])
-     (when-let [t (get-in m [:effects :pressure])]
-       [:div [:span [:img.pt-icn {:src "./img/tonometer.png"}] (plusify t)]])
-     (when-let [t (get-in m [:effects :sugar])]
-       [:div [:span [:img.pt-icn {:src "./img/sugar.png"}] (plusify t)]])
-     (when-let [t (get-in m [:effects :bacteria])]
-       [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}] (plusify t)]])
-     (when-let [t (get-in m [:effects :diarea])]
-       [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}] (plusify t)]])
+        [:div [:span [:img.pt-icn {:src "./img/thermometer.png"}] (plusify t)]])
+      (when-let [t (get-in m [:effects :pressure])]
+        [:div [:span [:img.pt-icn {:src "./img/tonometer.png"}] (plusify t)]])
+      (when-let [t (get-in m [:effects :sugar])]
+        [:div [:span [:img.pt-icn {:src "./img/sugar.png"}] (plusify t)]])
+      (when-let [t (get-in m [:effects :bacteria])]
+        [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}] (plusify t)]])
+      (when-let [t (get-in m [:effects :diarea])]
+        [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}] (plusify t)]])
+      
 
       ]]]])
 
 (defn aidbox [med]
    [:div.rpgui-container.framed-golden.pos-initial.aidbox.flex
     (into [:<>]
-          (for [[k i] med]  ^{:key (:id i)}
-            (drug i)))])
+          (for [[id res] med]  ^{:key id}
+            (drug id res)))])
 
 (pages/reg-subs-page
  model/index-page
