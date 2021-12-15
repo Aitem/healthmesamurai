@@ -4,6 +4,23 @@ body, #root
     padding-top:20px;
     padding-bottom:20px;
 }
+.pt-icn {
+    width: 22px;
+    margin-right: 10px;
+}
+.pt-monitor {
+    width: 50px;
+    margin-right: 10px;
+}
+#app .pt-stats {
+    margin-top: 10px;
+}
+#app .pt {
+    margin-right: 10px;
+}
+#app .p-8 {
+    padding: 8px;
+}
 
 #app .relative {
     position: relative;

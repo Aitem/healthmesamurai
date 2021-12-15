@@ -2,18 +2,21 @@
   (:require [zframes.pages :as pages]
             [app.pages.game.model :as model]))
 
-(defn drag-golden []
-  [:div.rpgui-container.framed-golden-2.pos-initial.rpgui-cursor-grab-open.drag
-   [:h3 "Николас"]
-   [:div.flex
-    [:div.rpgui-icon.empty-slot.tabl-ico]
+(defn drag-golden [pt]
+  [:div.rpgui-container.framed-golden-2.pos-initial.rpgui-cursor-grab-open.drag.p-8.pt
+   [:h3 (get-in pt [:name 0 :given 0])]
+   [:div.flex.pt-10
+    [:img.pt-monitor {:src "./img/monitor.png"}]
     [:div.grow-1
-     [:div [:span "Temp +1"]]
-     [:div [:span "Pressure +1"]]
-     [:div [:span "Sugar +3"]]
-     [:div [:span "Diarrea +4"]]
-     [:div [:span "Bacteria +1"]]
-     ]]]
+     [:div [:span.pt-hp [:img.pt-icn {:src "./img/heart.png"}] "8/10"]]
+     [:div [:span.pt-mn [:img.pt-icn {:src "./img/coin_gold.png"}] "20/20"]]]]
+   [:div.pt-stats
+    [:div [:span [:img.pt-icn {:src "./img/temp.png"}]      "+1"]]
+    [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}] "+1"]]
+    [:div [:span [:img.pt-icn {:src "./img/potion_red.png"}] "+3"]]
+    [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}] "+4"]]
+    [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}] "+1"]]]
+   ]
   )
 
 (defn drag []
@@ -46,7 +49,12 @@
      [:div.grow-1
       [:div.top-wall]
       [:div.top-90
-       [:div.aidbox-grid [drag-golden] [drag-golden] [drag-golden]]
+       (when (> (count pts) 1)
+         [:div.aidbox-grid
+          [drag-golden (nth pts 0)]
+          [drag-golden (nth pts 1)]
+          [drag-golden (nth pts 2)]
+          ])
        [:img.blood {:src "./img/blood.png"}]
        [:img.patient {:src "./img/patient.png"}]
        [:img.koika {:src "./img/koika.png"}]

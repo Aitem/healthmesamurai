@@ -4,7 +4,7 @@
 (defn keywordize [x]
   #?(:cljs (js->clj x :keywordize-keys true)))
 
-(defn endcode-json [val]
+(defn encode-json [val]
   #?(:clj val
      :cljs (->> val
                 clj->js

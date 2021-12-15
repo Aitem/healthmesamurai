@@ -34,6 +34,7 @@
  ::set
  (fn [items]
    (doseq [[k v] items]
+     (prn k v)
      (set-item k v))))
 
 (rf/reg-fx

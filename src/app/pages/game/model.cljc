@@ -1,20 +1,21 @@
 (ns app.pages.game.model
   (:require [re-frame.core :as rf]
+            [zframes.storage :as storage]
             [zframes.pages :as pages]))
 
 (def index-page ::index-page)
 
 (rf/reg-event-fx
  index-page
- (fn [{db :db} [pid phase params]]
-   ))
+ [(rf/inject-cofx ::storage/get [:player])]
+ (fn [{storage :storage  db :db} [pid phase params]]
+   {:db (merge db storage)
+    :json/fetch {:uri "/Patient"
+                 :params {:general-practitioner (get-in storage [:player :id])}
+                 :req-id ::pts}}))
 
 (rf/reg-sub
  index-page
- :<- [:xhr/response index-page]
- :<- [:xhr/response ::devices]
- (fn [[pts devices] _]
-   {:pts (->> pts :data :entry (map :resource)
-              (reduce
-               (fn [acc d] (assoc acc (:id d) d)) {}))
-    :d (->> devices :data)}))
+ :<- [:xhr/response ::pts]
+ (fn [pts _]
+   {:pts (->> pts :data :entry (map :resource))}))
