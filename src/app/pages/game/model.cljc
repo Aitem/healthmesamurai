@@ -7,7 +7,7 @@
 
 
 (def aidbox
-  {"11" {:id      "111"
+  {"11" {:id      "11"
          :name    "Insulin"
          :img     "./img/insulin.png"
          :price   2
