@@ -1,9 +1,23 @@
 (ns app.pages.game.end
   (:require [zframes.pages :as pages]
             [re-frame.core :as rf]
+            [zframes.storage :as storage]
             [app.pages.index.model :as model]))
 
 (def index-page ::index-page)
+
+
+(rf/reg-event-fx
+  index-page
+  [(rf/inject-cofx ::storage/get [:player])]
+  (fn [{storage :storage  db :db} [pid phase params]]
+    {:db db}))
+
+
+(rf/reg-sub
+  index-page
+  (fn [db] db))
+
 
 (pages/reg-subs-page
  index-page
