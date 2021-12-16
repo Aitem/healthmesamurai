@@ -17,6 +17,17 @@
   (rand-nth pt-names)
   )
 
+(rf/reg-sub
+ ::practitioner-name
+ (fn [db _]
+   (:practitioner-name db)))
+
+(rf/reg-event-db
+ ::practitioner-name
+ (fn [db [_ name]]
+   (-> db
+       (assoc :practitioner-name name))))
+
 
 (rf/reg-event-fx
  index-page
@@ -24,10 +35,10 @@
 
 (rf/reg-event-fx
  ::start-game
- (fn [{db :db} [evid]]
+ (fn [{db :db} [evid practitioner-name]]
    {:json/fetch {:uri "/Practitioner"
                  :method :post
-                 :body {:name [{:given ["marat"]}]}
+                 :body {:name [{:given [practitioner-name]}]}
                  :success {:event ::prepare-patients}
                  :req-id evid}}))
 
