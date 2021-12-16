@@ -107,9 +107,9 @@
  (fn [{dv :d pts :pts medics :aidbox :as  page} _]
    (let [drag-box-state (rf/subscribe [:dnd/drag-box])]
      (fn [{dv :d pts :pts medics :aidbox obs :obs :as page} _]
-       (when @drag-box-state [dndv/drag-box])
 
-       [:div.game.rpgui-container.framed.relative.draggable
+       [:div.game.rpgui-container.framed.relative
+        (when @drag-box-state [dndv/drag-box])
 
         [:div.fsgrid
          [:div#g-patients
