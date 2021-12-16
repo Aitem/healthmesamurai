@@ -1,5 +1,6 @@
 (ns app.pages.game.model
   (:require [re-frame.core :as rf]
+            [zframes.routing :as routing]
             [zframes.storage :as storage]
             [zframes.pages :as pages]
             [clojure.string :as str]))
@@ -164,9 +165,12 @@
                      (fn [acc k pt]
                        (assoc acc k (do-hp-damage pt (get-in db [:observations (:id pt)]))))
                      {} (get-in db [:patients]))]
-     {:db (-> db
-              (assoc :ap {:current 10
-                          :total   10})
-              (assoc :observations result-obs)
-              (assoc :patients     result-pt)
-              (update :game-step   inc))})))
+     (merge
+      {:db (-> db
+               (assoc :ap {:current 10
+                           :total   10})
+               (assoc :observations result-obs)
+               (assoc :patients     result-pt)
+               (update :game-step   inc))}
+      (when (=  (:game-step db) 9)
+        {::routing/redirect {:ev :app.pages.game.end/index-page}})))))
