@@ -40,17 +40,18 @@
                                                (if (get-in p [:deceased :boolean])
                                                  :dead
                                                  :alive)) patients)
-          score-multiplicator      (count alive)
+          score-multiplicator      (max 1 (count alive))
           patients-alive           (count alive)
           patients-died            (count dead)
           money-left               (score-calculator :balance alive)
           patient-health-left      (score-calculator :health alive)
           dead-patients-money-left (score-calculator :balance dead)
-          score                    (- (+ money-left patient-health-left)
-                                      dead-patients-money-left)
-          total-score              (* score score-multiplicator)]
+          score                    (+ money-left patient-health-left)
+          total-score              (- (* score score-multiplicator)
+                                      dead-patients-money-left)]
       {:patients-alive patients-alive
        :patients-died  patients-died
+       :score-multiplicator score-multiplicator
        :money-left money-left
        :patient-health-left  patient-health-left
        :total-score total-score
@@ -91,10 +92,10 @@
       [:hr]
       [:div {:style {:display :flex :justify-content :center}}
        [:div
-        [:p (str "Финальный счет = "
+        [:p (str "Финальный счет = ("
                  (:patient-health-left stats)
-                 " + " (:money-left     stats)
-                 " - " (:dead-patients-money-left stats)
+                 " + " (:money-left stats)
+                 ") * " (:score-multiplicator stats) " - " (:dead-patients-money-left stats)
                  " = " (:total-score stats))]]]
       [:br]
       [:div.rpgui-center
