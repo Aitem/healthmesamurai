@@ -209,6 +209,8 @@ body, #root
 
 .ib {
     display: inline-block;
+    width: 238px;
+
 }
 
 .stat-row.red {
