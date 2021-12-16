@@ -97,10 +97,19 @@
        ]]]]])
 
 (defn aidbox [med]
-   [:div.rpgui-container.framed-golden.pos-initial.aidbox
+
+  [:div.rpgui-container.framed-golden.pos-initial
+   [:div.tabss
+    [:img.pt-icn {:src "./img/thermometer.png"}]
+    [:img.pt-icn {:src "./img/tonometer.png"}]
+    [:img.pt-icn {:src "./img/sugar.png"}]
+    [:img.pt-icn {:src "./img/orc_green.png"}]
+    [:img.pt-icn {:src "./img/diarrhea.png"}]
+    [:hr]]
+   [:div.aidbox
     (into [:<>]
           (for [[id res] med]  ^{:key id}
-            (drug id res)))])
+            (drug id res)))]])
 
 (defn koika-1 []
   [:div

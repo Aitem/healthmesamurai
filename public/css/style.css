@@ -127,6 +127,18 @@ body, #root
     height: 120px;
     background-size: 19px;
 }
+.position-rel {
+    position: relative !important;
+}
+
+.tabs {
+     position: absolute;
+    width: 100%;
+    top: 0;
+    z-index: 100;
+    left: 0;
+    background-color: green;
+}
 
 #app .game
 {
@@ -138,6 +150,9 @@ body, #root
     max-width: 97%;
     margin: 0 auto;
     height: calc(100vh - 35px);
+}
+.tabs {
+    position:
 }
 
 .fsgrid {
@@ -210,6 +225,7 @@ body, #root
 .ib {
     display: inline-block;
     width: 300px;
+    margin-bottom: 10px;
 }
 
 .stat-row.red {
