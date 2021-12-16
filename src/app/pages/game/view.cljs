@@ -45,7 +45,7 @@
   (let [o (group-by #(get-in % [:code :coding 0 :code]) obs)
         death? (get-in pt [:deceased :boolean])
         d death?]
-    [:div.rpgui-container.pos-initial.rpgui-cursor-grab-open.drag.p-8.pt
+    [:div.rpgui-container.pos-initial.drag.p-8.pt
      {:class (if death? "framed" "framed-golden")}
      [:h3 (get-in pt [:name 0 :given 0])]
      [:div.flex.pt-10
@@ -80,8 +80,9 @@
       [:div.rpgui-icon.empty-slot.tabl-ico
        [:img.med-img {:src (:image m)}]]
       [:div.grow-1
+       [:span "AP: " (:action-point m)]
        (when-let [t (get-in m [:price])]
-         [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}] "-" t]])
+         [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}]  t]])
        (when-let [t (get-in m [:effects :temperature])]
          [:div [:span [:img.pt-icn {:src "./img/thermometer.png"}] (plusify t)]])
        (when-let [t (get-in m [:effects :pressure])]
@@ -96,20 +97,39 @@
 
        ]]]]])
 
-(defn aidbox [med]
+(defonce state (r/atom {:selected :temperature}))
 
-  [:div.rpgui-container.framed-golden.pos-initial
-   [:div.tabss
-    [:img.pt-icn {:src "./img/thermometer.png"}]
-    [:img.pt-icn {:src "./img/tonometer.png"}]
-    [:img.pt-icn {:src "./img/sugar.png"}]
-    [:img.pt-icn {:src "./img/orc_green.png"}]
-    [:img.pt-icn {:src "./img/diarrhea.png"}]
-    [:hr]]
-   [:div.aidbox
-    (into [:<>]
-          (for [[id res] med]  ^{:key id}
-            (drug id res)))]])
+(defn aidbox [med]
+  (let [set-fltr #(swap! state assoc :selected %)]
+    (fn [med]
+      [:div.rpgui-container.framed-golden.pos-initial
+       [:div.tab
+        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :temperature)
+                      :src "./img/thermometer.png" :class (when (= :temperature (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :pressure)
+                      :src "./img/tonometer.png"   :class (when (= :pressure    (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :sugar)
+                      :src "./img/sugar.png"       :class (when (= :sugar       (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :bacteria)
+                      :src "./img/orc_green.png"   :class (when (= :bacteria    (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :diarrhea)
+                      :src "./img/diarrhea.png"    :class (when (= :diarrhea    (:selected @state)) "active")}]]
+       [:hr]
+       [:div.aidbox
+        (let [mmeds (reduce-kv
+                     (fn [acc k v]
+                       (if (> (get-in v [:effects (:selected @state)]) 0)
+                         (assoc acc k v)
+                         acc))
+                     {} med)
+              mmeds  (sort-by  (juxt
+                                #(get-in (val %) [:action-point])
+                                #(- (get-in (val %) [:effects (:selected @state)]))
+                                )  mmeds)]
+          (into
+           [:<>]
+           (for [[id res] mmeds]  ^{:key id}
+             (drug id res))))]])))
 
 (defn koika-1 []
   [:div

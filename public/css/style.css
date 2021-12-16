@@ -151,8 +151,20 @@ body, #root
     margin: 0 auto;
     height: calc(100vh - 35px);
 }
-.tabs {
-    position:
+
+.tab {
+    display: flex;
+    justify-content: space-around;
+}
+.tab .pt-icn {
+    width: 30px;
+}
+
+.tab .pt-icn:hover {
+}
+
+.tab .pt-icn.active {
+    background-color: gray;
 }
 
 .fsgrid {
@@ -242,5 +254,5 @@ body, #root
 
 .aidbox {
     overflow: scroll;
-    height: calc(100vh - 200px);
+    height: calc(100vh - 290px);
 }
