@@ -194,8 +194,8 @@ body, #root
 
 
 .draggable, dropped-element {
-   cursor: move;
-   position: relative;
+    cursor: url(./../dist/img/cursor/grab-close.png) 10 0,auto!important;
+    position: relative;
 }
 
 .draggable .drag-mask,
