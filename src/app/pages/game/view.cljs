@@ -102,6 +102,37 @@
           (for [[id res] med]  ^{:key id}
             (drug id res)))])
 
+(defn koika-1 []
+  [:div
+   [:img.tumba   {:src "./img/tumba.png"}]
+   [:img.patient {:src "./img/patient.png"}]
+   [:img.koika   {:src "./img/koika.png"}]
+   [:img.wall    {:src "./img/wall.png"}]
+
+   ])
+
+(defn koika-2 []
+  [:div
+   [:img.blood   {:src "./img/blood.png"}]
+   [:img.patient {:src "./img/patient.png"}]
+   [:img.koika   {:src "./img/koika.png"}]
+   [:img.tumba   {:src "./img/tumba.png"}]
+   [:img.wall    {:src "./img/wall.png"}]
+   ])
+
+(defn koika-3 []
+  [:div
+   [:img.patient {:src "./img/patient.png"}]
+   [:img.koika   {:src "./img/koika.png"}]
+   [:img.tumba   {:src "./img/tumba.png"}]
+   ])
+
+(defn koika [idx]
+  (case idx
+    0 [koika-1]
+    1 [koika-2]
+    [koika-3]))
+
 (pages/reg-subs-page
  model/index-page
  (fn [{dv :d pts :pts medics :aidbox :as  page} _]
@@ -115,8 +146,21 @@
          [:div#g-patients
           [:div.flex
            (into [:<>]
-                 (for [[k v] pts] ^{:key k}
-                   [dndv/drop-zone (keyword k) [drag-golden v (get obs k)]]))]]
+                 (for [[idx [k v]] (map-indexed vector pts)] ^{:key k}
+                   [dndv/drop-zone (keyword k)
+                    [:div
+                     [drag-golden v (get obs k)]
+                     [koika idx]]]))]
+
+          #_[:div {:style {:margin-top "20px"}}
+           [:img.patient {:src "./img/patient.png"}]
+           [:img.koika   {:src "./img/koika.png"}]
+           [:img.tumba   {:src "./img/tumba.png"}]
+           [:img.wall    {:src "./img/wall.png"}]
+           [:img.patient {:src "./img/patient.png"}]
+           [:img.koika   {:src "./img/koika.png"}]
+           ]
+          ]
 
 
          [:div#g-aidbox
