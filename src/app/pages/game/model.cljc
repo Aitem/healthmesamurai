@@ -13,8 +13,8 @@
    {:db (-> db
             (merge storage)
             (assoc :game-step 1)
-            (assoc-in [:ap :total]   5)
-            (assoc-in [:ap :current] 2))
+            (assoc-in [:ap :total]   9)
+            (assoc-in [:ap :current] 8))
     :json/fetch [{:uri "/Medication"
                   :req-id ::mds
                   :success {:event ::save-aidbox}}
@@ -89,7 +89,8 @@
  (fn [{db :db} [_ pt drug]]
    (if (< (:balance pt) (:price drug))
      {:db db}
-     (let [obs     (get-in db [:observations (:id pt)])
+     (let [ap      (:ap db)
+           obs     (get-in db [:observations (:id pt)])
            stats   (get-in db [:observations (:id pt)])
            stats   (group-by #(get-in % [:code :coding 0 :code]) stats)
            stats   (reduce-kv (fn [acc k v]
@@ -109,8 +110,11 @@
                         []
                         result-stats)]
 
+       (prn "apply ap" (get-in db [:ap :current]))
+       (prn "apply ap" (:action-point drug))
        {:db (-> db
                 (assoc-in [:patients (:id pt)] patient)
+                (update-in [:ap :current] - (:action-point drug))
                 (assoc-in [:observations (:id pt)] new-obs))
 
         :json/fetch {:uri (str "/Patient/" (:id pt))

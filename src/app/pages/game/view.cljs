@@ -188,10 +188,9 @@
 
 (pages/reg-subs-page
  model/index-page
- (fn [{dv :d pts :pts medics :aidbox ap :ap :as  page} _]
+ (fn [_ _]
    (let [drag-box-state (rf/subscribe [:dnd/drag-box])]
-     (fn [{dv :d pts :pts medics :aidbox obs :obs :as page} _]
-
+     (fn [{dv :d pts :pts medics :aidbox obs :obs ap :ap :as  page} _]
        [:div.game.rpgui-container.framed.relative
         (when @drag-box-state [dndv/drag-box])
 
