@@ -131,41 +131,45 @@
            (for [[id res] mmeds]  ^{:key id}
              (drug id res))))]])))
 
-(defn koika-1 []
+(defn koika-1 [patient]
   [:div
    [:img.tumba   {:src "./img/tumba.png"}]
-   [:img.patient {:src "./img/patient.png"}]
+   [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))}]
    [:img.koika   {:src "./img/koika.png"}]
    [:img.wall    {:src "./img/wall.png"}]
 
    ])
 
-(defn koika-2 []
+(defn koika-2 [patient]
   [:div
    [:img.blood   {:src "./img/blood.png"}]
-   [:img.patient {:src "./img/patient.png"}]
+   [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))}]
    [:img.koika   {:src "./img/koika.png"}]
    [:img.tumba   {:src "./img/tumba.png"}]
    [:img.wall    {:src "./img/wall.png"}]
    ])
 
-(defn koika-3 []
+(defn koika-3 [patient]
+  (prn patient)
   [:div
-   [:img.patient {:src "./img/patient.png"}]
+   [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))}]
    [:img.koika   {:src "./img/koika.png"}]
    [:img.tumba   {:src "./img/tumba.png"}]
    ])
 
-(defn koika [idx]
-  (case idx
-    0 [koika-1]
-    1 [koika-2]
-    [koika-3]))
+(defn koika [idx patients]
+  (let [vec-patients (vec patients)
+        k (case idx
+            0 koika-1
+            1 koika-2
+            koika-3)]
+    [k (val (nth vec-patients idx))]))
 
 (pages/reg-subs-page
  model/index-page
  (fn [{dv :d pts :pts medics :aidbox :as  page} _]
-   (let [drag-box-state (rf/subscribe [:dnd/drag-box])]
+   (let [drag-box-state (rf/subscribe [:dnd/drag-box])
+         patients (rf/subscribe [::model/patients])]
      (fn [{dv :d pts :pts medics :aidbox obs :obs :as page} _]
 
        [:div.game.rpgui-container.framed.relative
@@ -179,7 +183,7 @@
                    [dndv/drop-zone (keyword k)
                     [:div
                      [drag-golden v (get obs k)]
-                     [koika idx]]]))]
+                     [koika idx @patients]]]))]
 
           #_[:div {:style {:margin-top "20px"}}
            [:img.patient {:src "./img/patient.png"}]

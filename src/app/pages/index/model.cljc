@@ -6,16 +6,21 @@
 
 (def index-page ::index-page)
 
-(def pt-names ["Arnbo" "Lecona" "Arbornora" "Kullorsa"
-               "Ilugaars" "Kuumtoq" "Dulao" "Uruazoc"
-               "Jiusave" "Somerham" "Lonwick" "Harpstone"
-               "Onostone" "Bricona" "Dorrial" "Ilulisna"
-               "Qassiars" "Siorapa" "Guadora" "Buenapant"
-               "Coamora" "Yarcester" "Preshurst" "Buxbron"])
+(def genders ["male" "female"])
 
-(defn patient-name []
-  (rand-nth pt-names)
-  )
+(def pt-names
+  {"male"   ["Arnbo" "Ilugaars" "Kuumtoq" "Dulao"
+             "Uruazoc" "Jiusave" "Somerham" "Lonwick"
+             "Qassiars" "Buenapant" "Yarcester" "Preshurst" "Buxbron"]
+   "female" ["Kullorsa" "Lecona" "Arbornora" "Bricona"
+             "Ilulisna" "Siorapa" "Coamora" "Guadora"
+             "Dorrial" "Onostone" "Harpstone"]})
+
+(def pt-avatars
+  {"male"   ["char_1_male.png" "char_2_male.png" "char_4_male.png" "char_6_male.png"
+             "char_7_male.png" "char_9_male.png" "char_14_male.png"]
+   "female" ["char_3_female.png" "char_5_female.png" "char_8_female.png" "char_10_female.png"
+             "char_11_female.png" "char_12_female.png" "char_13_female.png"]})
 
 (rf/reg-sub
  ::practitioner-name
@@ -43,11 +48,16 @@
                  :req-id evid}}))
 
 (defn mk-patient-batch-req [{id :id :as practitioner}]
-  {:request {:method "POST" :url "/Patient"}
-   :resource {:name [{:given [(patient-name)]}]
-              :balance 20
-              :health  10
-              :generalPractitioner [{:id id :resourceType "Practitioner"}]}})
+  (let [pt-gender (rand-nth genders)
+        pt-avatar (rand-nth (get pt-avatars pt-gender))
+        pt-name (rand-nth (get pt-names pt-gender))]
+    {:request {:method "POST" :url "/Patient"}
+     :resource {:name [{:given [pt-name]}]
+                :balance 20
+                :health  10
+                :gender pt-gender
+                :generalPractitioner [{:id id :resourceType "Practitioner"}]
+                :avatar pt-avatar}}))
 
 (defn stat-builder [patient stat]
   {:request {:method "post" :url "/Observation"}
