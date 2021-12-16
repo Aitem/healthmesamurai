@@ -178,19 +178,17 @@
    [:img.tumba   {:src "./img/tumba.png"}]
    ])
 
-(defn koika [idx patients]
-  (let [vec-patients (vec patients)
-        k (case idx
+(defn koika [idx patient]
+  (let [k (case idx
             0 koika-1
             1 koika-2
             koika-3)]
-    [k (val (nth vec-patients idx))]))
+    [k patient]))
 
 (pages/reg-subs-page
  model/index-page
  (fn [{dv :d pts :pts medics :aidbox ap :ap :as  page} _]
-   (let [drag-box-state (rf/subscribe [:dnd/drag-box])
-         patients (rf/subscribe [::model/patients])]
+   (let [drag-box-state (rf/subscribe [:dnd/drag-box])]
      (fn [{dv :d pts :pts medics :aidbox obs :obs :as page} _]
 
        [:div.game.rpgui-container.framed.relative
@@ -204,7 +202,7 @@
                    [dndv/drop-zone (keyword k)
                     [:div
                      [drag-golden v (get obs k)]
-                     [koika idx @patients]]]))]]
+                     [koika idx v]]]))]]
 
          [:div#g-aidbox
           [aidbox medics ap]]
