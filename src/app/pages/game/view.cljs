@@ -137,11 +137,13 @@
           [aidbox medics]
           [:div.flex.ac
            [:div.grow-1.mr-3
-            [:div.rpgui-progress.blue {:data-rpguitype "progress"}
-             [:div.rpgui-progress-track
-              [:div.rpgui-progress-fill.blue {:style {:width "20%"}}]]
-             [:div.rpgui-progress-left-edge]
-             [:div.rpgui-progress-right-edge]]]
+            [:div
+             [:div.rpgui-progress.blue {:data-rpguitype "progress"}
+              [:div.rpgui-progress-track
+               [:div.rpgui-progress-fill.blue
+                {:style {:width (str (/ (* 100 (or (:game-step page) 1) ) 10) "%")}}]]
+              [:div.rpgui-progress-left-edge]
+              [:div.rpgui-progress-right-edge]]]]
 
            [:div
             [:button.rpgui-button.golden
