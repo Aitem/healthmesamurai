@@ -80,6 +80,9 @@
     :obs obs
     :aidbox aids}))
 
+(defn apply-stats [pt effect]
+  (merge-with (fn [a b] (max 0 (min 5 (+ a b)))) pt effect))
+
 (rf/reg-event-fx
  ::apply-drug
  (fn [{db :db} [_ pt drug]]
@@ -92,7 +95,7 @@
                                 (assoc acc (keyword k) (get-in v [0 :value :Quantity :value])))
                            {} stats)
 
-           result-stats  (merge-with (fn [a b] (max 0 (min 5 (+ a b)))) stats (:effects drug))
+           result-stats  (apply-stats stats (:effects drug))
 
            patient (update pt :balance - (:price drug))
            new-obs (reduce-kv
@@ -105,8 +108,6 @@
                         []
                         result-stats)]
 
-       (prn new-obs)
-
        {:db (-> db
                 (assoc-in [:patients (:id pt)] patient)
                 (assoc-in [:observations (:id pt)] new-obs))
@@ -114,9 +115,40 @@
         :json/fetch {:uri (str "/Patient/" (:id pt))
                      :method :put
                      :body patient}}))))
+(rand-int 3)
+(first {:foo "bar" :tar "mar"})
+
+
+(defn do-damage [_]
+  {:sugar        (* -1 (rand-int 2))
+   :temperature  (* -1 (rand-int 2))
+   :pressure     (* -1 (rand-int 2))
+   :bacteria     (* -1 (rand-int 2))
+   :diarrhea     (* -1 (rand-int 2))})
 
 (rf/reg-event-fx
  ::next-step
  (fn [{db :db} [_]]
-   (prn "Next step")
-   {:db db}))
+   (let [[pt-id pt]  (first (get-in db [:patients]))
+         obs         (get-in db [:observations (:id pt)])
+         damage      (do-damage {})
+         stats   (group-by #(get-in % [:code :coding 0 :code]) obs)
+         stats   (reduce-kv (fn [acc k v]
+                              (assoc acc (keyword k) (get-in v [0 :value :Quantity :value])))
+                            {} stats)
+
+         result-stats  (apply-stats stats damage)
+
+         result   (reduce-kv
+                   (fn [acc k v]
+                     (conj acc
+                           (-> obs
+                               (->> (filter #(= (name k) (get-in % [:code :coding 0 :code]))))
+                               first
+                               (assoc-in [:value :Quantity :value] v))))
+                   []
+                   result-stats)]
+     (prn "Next step")
+     {:db (-> db
+                (assoc-in [:observations (:id pt)] result)
+                )})))
