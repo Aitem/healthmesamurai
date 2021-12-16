@@ -93,10 +93,14 @@ body, #root
     margin-left: 60px;
 }
 .patient {
-    width: 66px;
+    width: 128px;
     position: relative;
-    margin-right: -83px;
-    margin-bottom: 59px;
+    margin-right: -118px;
+    margin-bottom: 80px;
+}
+.patient.deceased {
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
 }
 .inln {
     display: inline-block;
