@@ -128,13 +128,20 @@
            [:img.patient {:src "./img/patient.png"}]
            [:img.koika {:src "./img/koika.png"}]]
           [aidbox medics]
-          [:div
-           [:div.rpgui-progress.blue {:data-rpguitype "progress"}
-            [:div.rpgui-progress-track
-             [:div.rpgui-progress-fill.blue {:style {:width "20%"}}]]
-            [:div.rpgui-progress-left-edge]
-            [:div.rpgui-progress-right-edge]
-            ]]
+          [:div.flex.ac
+           [:div.grow-1.mr-3
+            [:div.rpgui-progress.blue {:data-rpguitype "progress"}
+             [:div.rpgui-progress-track
+              [:div.rpgui-progress-fill.blue {:style {:width "20%"}}]]
+             [:div.rpgui-progress-left-edge]
+             [:div.rpgui-progress-right-edge]]]
+
+           [:div
+            [:button.rpgui-button.golden
+             {:style {:padding-top "0px"}
+              :on-click #(rf/dispatch [::model/next-step])}
+             [:p {:style {:padding-top "5px"}} "Далее"]]]]
+
           ]]
 
         [:br]]))))

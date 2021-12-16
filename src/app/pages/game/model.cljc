@@ -114,3 +114,9 @@
         :json/fetch {:uri (str "/Patient/" (:id pt))
                      :method :put
                      :body patient}}))))
+
+(rf/reg-event-fx
+ ::next-step
+ (fn [{db :db} [_]]
+   (prn "Next step")
+   {:db db}))
