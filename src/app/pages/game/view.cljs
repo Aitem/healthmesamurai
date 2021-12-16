@@ -147,7 +147,7 @@
             [:button.rpgui-button.golden
              {:style {:padding-top "0px"}
               :on-click #(rf/dispatch [::model/next-step])}
-             [:p {:style {:padding-top "5px"}} "Далее"]]]]
+             [:p {:style {:padding-top "5px"}} "Далее " (:game-step page) "/10"]]]]
 
           ]]
 
