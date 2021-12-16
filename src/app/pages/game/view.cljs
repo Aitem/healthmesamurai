@@ -66,7 +66,7 @@
       (let [m (get-in (get o "sugar")       [0 :value :Quantity :value])]
         [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/sugar.png"}]         m "/5 sugar"]])
       (let [m (get-in (get o "bacteria")    [0 :value :Quantity :value])]
-        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/orc_green.png"}]     m "/5 bacteria"]])
+        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/bacteria.png"}]     m "/5 bacteria"]])
       (let [m (get-in (get o "diarrhea")    [0 :value :Quantity :value])]
         [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/diarrhea.png"}]      m "/5 diarrhea"]])]]))
 
@@ -94,7 +94,7 @@
         (when-let [t (get-in m [:effects :sugar])]
           [:div [:span [:img.pt-icn {:src "./img/sugar.png"}] (plusify t)]])
         (when-let [t (get-in m [:effects :bacteria])]
-          [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}] (plusify t)]])
+          [:div [:span [:img.pt-icn {:src "./img/bacteria.png"}] (plusify t)]])
         (when-let [t (get-in m [:effects :diarrhea])]
           [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}] (plusify t)]])]
 
@@ -114,7 +114,7 @@
         [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :sugar)
                       :src "./img/sugar.png"       :class (when (= :sugar       (:selected @state)) "active")}]
         [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :bacteria)
-                      :src "./img/orc_green.png"   :class (when (= :bacteria    (:selected @state)) "active")}]
+                      :src "./img/bacteria.png"   :class (when (= :bacteria    (:selected @state)) "active")}]
         [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :diarrhea)
                       :src "./img/diarrhea.png"    :class (when (= :diarrhea    (:selected @state)) "active")}]]
        [:hr]
