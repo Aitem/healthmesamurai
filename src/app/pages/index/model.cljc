@@ -9,18 +9,18 @@
 (def genders ["male" "female"])
 
 (def pt-names
-  {"male"   ["Arnbo" "Ilugaars" "Kuumtoq" "Dulao"
-             "Uruazoc" "Jiusave" "Somerham" "Lonwick"
-             "Qassiars" "Buenapant" "Yarcester" "Preshurst" "Buxbron"]
-   "female" ["Kullorsa" "Lecona" "Arbornora" "Bricona"
-             "Ilulisna" "Siorapa" "Coamora" "Guadora"
-             "Dorrial" "Onostone" "Harpstone"]})
+  {"male"   #{"Arnbo" "Ilugaars" "Kuumtoq" "Dulao"
+              "Uruazoc" "Jiusave" "Somerham" "Lonwick"
+              "Qassiars" "Buenapant" "Yarcester" "Preshurst" "Buxbron"}
+   "female" #{"Kullorsa" "Lecona" "Arbornora" "Bricona"
+              "Ilulisna" "Siorapa" "Coamora" "Guadora"
+              "Dorrial" "Onostone" "Harpstone"}})
 
 (def pt-avatars
-  {"male"   ["char_1_male.png" "char_2_male.png" "char_4_male.png" "char_6_male.png"
-             "char_7_male.png" "char_9_male.png" "char_14_male.png"]
-   "female" ["char_3_female.png" "char_5_female.png" "char_8_female.png" "char_10_female.png"
-             "char_11_female.png" "char_12_female.png" "char_13_female.png"]})
+  {"male"   #{"char_1_male.png" "char_2_male.png" "char_4_male.png" "char_6_male.png"
+             "char_7_male.png" "char_9_male.png" "char_14_male.png"}
+   "female" #{"char_3_female.png" "char_5_female.png" "char_8_female.png" "char_10_female.png"
+              "char_11_female.png" "char_12_female.png" "char_13_female.png"}})
 
 (rf/reg-sub
  ::practitioner-name
@@ -47,17 +47,27 @@
                  :success {:event ::prepare-patients}
                  :req-id evid}}))
 
+
 (defn mk-patient-batch-req [{id :id :as practitioner}]
-  (let [pt-gender (rand-nth genders)
-        pt-avatar (rand-nth (get pt-avatars pt-gender))
-        pt-name (rand-nth (get pt-names pt-gender))]
-    {:request {:method "POST" :url "/Patient"}
-     :resource {:name [{:given [pt-name]}]
-                :balance 20
-                :health  10
-                :gender pt-gender
-                :generalPractitioner [{:id id :resourceType "Practitioner"}]
-                :avatar pt-avatar}}))
+  (loop [free-avatars pt-avatars
+         free-names   pt-names
+         patients     []]
+    (if (= 3 (count patients))
+      patients
+      (let [pt-gender (rand-nth genders)
+            pt-avatar (rand-nth (vec (get free-avatars pt-gender)))
+            pt-name   (rand-nth (vec (get free-names pt-gender)))
+            pt-req {:request  {:method "POST" :url "/Patient"}
+                    :resource {:name                [{:given [pt-name]}]
+                               :balance             20
+                               :health              10
+                               :gender              pt-gender
+                               :generalPractitioner [{:id id :resourceType "Practitioner"}]
+                               :avatar              pt-avatar}}]
+        (recur
+          (update free-avatars pt-gender disj pt-avatar)
+          (update free-names pt-gender disj pt-name)
+          (conj patients pt-req))))))
 
 (defn stat-builder [patient stat]
   {:request {:method "post" :url "/Observation"}
@@ -82,9 +92,7 @@
     :json/fetch {:uri "/"
                  :method :post
                  :body {:resourceType "Bundle"
-                        :entry [(mk-patient-batch-req practitioner)
-                                (mk-patient-batch-req practitioner)
-                                (mk-patient-batch-req practitioner)]}
+                        :entry (mk-patient-batch-req practitioner)}
                  :success {:event ::save-init-data}}}))
 
 (rf/reg-event-fx
