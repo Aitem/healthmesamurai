@@ -47,16 +47,17 @@
         d death?]
     [:div.rpgui-container.pos-initial.drag.p-8.pt
      {:class (if death? "framed" "framed-golden")}
-     [:h3 (get-in pt [:name 0 :given 0])]
      [:div.flex.pt-10
       [:img.pt-monitor (if death?
                          {:src "./img/red-monitor.png"}
                          {:src "./img/monitor.png"})]
-      [:div.grow-1
-       [:div [:span.pt-hp [:img.pt-icn {:src "./img/heart.png"}]
-              (:health pt)  "/10"]]
-       [:div [:span.pt-mn [:img.pt-icn {:src "./img/coin_gold.png"}]
-              (:balance pt) "/20"]]]]
+      [:div
+       [:h3 {:style {:margin "0", :margin-bottom "5px"}} (get-in pt [:name 0 :given 0])]
+       [:span
+        [:span.pt-hp [:img.pt-icn {:src "./img/heart.png"}]
+         (:health pt)]
+        [:span.pt-mn.p-8 [:img.pt-icn {:src "./img/coin_gold.png"}]
+         (:balance pt)]]]]
      [:div.pt-stats
       (let [m (get-in (get o "temperature") [0 :value :Quantity :value])]
         [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/thermometer.png"}]   m "/5 temperature"]])
