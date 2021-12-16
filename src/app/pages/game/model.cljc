@@ -132,14 +132,15 @@
 (defn do-stat-damage [pt obs damage]
   (let [stats   (group-by #(get-in % [:code :coding 0 :code]) obs)
         stats   (reduce-kv (fn [acc k v] (assoc acc (keyword k) (get-in v [0 :value :Quantity :value]))) {} stats)
-        result-stats  (apply-stats stats damage)]
+        result-stats  (apply-stats stats damage)
+        dead? (get-in pt [:deceased :boolean])]
     (reduce-kv
      (fn [acc k v]
        (conj acc
              (-> obs
                  (->> (filter #(= (name k) (get-in % [:code :coding 0 :code]))))
                  first
-                 (assoc-in [:value :Quantity :value] v))))
+                 (assoc-in [:value :Quantity :value] (if dead? 0 v)))))
      []
      result-stats)))
 
