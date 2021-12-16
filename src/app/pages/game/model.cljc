@@ -119,36 +119,33 @@
 (first {:foo "bar" :tar "mar"})
 
 
-(defn do-damage [_]
+(defn mk-damage [_]
   {:sugar        (* -1 (rand-int 2))
    :temperature  (* -1 (rand-int 2))
    :pressure     (* -1 (rand-int 2))
    :bacteria     (* -1 (rand-int 2))
    :diarrhea     (* -1 (rand-int 2))})
 
+(defn do-damage [pt obs damage]
+  (let [stats   (group-by #(get-in % [:code :coding 0 :code]) obs)
+        stats   (reduce-kv (fn [acc k v] (assoc acc (keyword k) (get-in v [0 :value :Quantity :value]))) {} stats)
+        result-stats  (apply-stats stats damage)]
+    (reduce-kv
+     (fn [acc k v]
+       (conj acc
+             (-> obs
+                 (->> (filter #(= (name k) (get-in % [:code :coding 0 :code]))))
+                 first
+                 (assoc-in [:value :Quantity :value] v))))
+     []
+     result-stats)))
+
 (rf/reg-event-fx
  ::next-step
  (fn [{db :db} [_]]
-   (let [[pt-id pt]  (first (get-in db [:patients]))
-         obs         (get-in db [:observations (:id pt)])
-         damage      (do-damage {})
-         stats   (group-by #(get-in % [:code :coding 0 :code]) obs)
-         stats   (reduce-kv (fn [acc k v]
-                              (assoc acc (keyword k) (get-in v [0 :value :Quantity :value])))
-                            {} stats)
-
-         result-stats  (apply-stats stats damage)
-
-         result   (reduce-kv
-                   (fn [acc k v]
-                     (conj acc
-                           (-> obs
-                               (->> (filter #(= (name k) (get-in % [:code :coding 0 :code]))))
-                               first
-                               (assoc-in [:value :Quantity :value] v))))
-                   []
-                   result-stats)]
-     (prn "Next step")
-     {:db (-> db
-                (assoc-in [:observations (:id pt)] result)
-                )})))
+   (let [result (reduce-kv
+                 (fn [acc k pt]
+                   (assoc acc k (do-damage pt (get-in db [:observations (:id pt)]) (mk-damage {}))))
+                 {}
+                 (get-in db [:patients]))]
+     {:db (-> db (assoc :observations result))})))
