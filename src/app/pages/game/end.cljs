@@ -17,32 +17,80 @@
   index-page
   (fn [db] db))
 
+(defn score-calculator
+  [keyword coll]
+  (reduce (fn [acc p]
+            (let [param (keyword p)]
+              (+ acc param)))
+          0
+          coll))
+
 (rf/reg-sub
-  :score
+  :stats
   (fn [db _]
-    (let [patients (get-in db [:patients])
-          {:keys [dead alive]} (group-by (fn [p] (if (get-in p [:deceased :boolean])
-                                                   :dead
-                                                   :alive)) patients)
-          score-multiplicator (count alive)
-          score (reduce (fn [acc p]
-                          (let [health (:health p)
-                                money  (:balance p)]
-                            (+ acc money health)))
-                        0
-                        alive)]
-      (* score score-multiplicator))))
+    (let [patients                 (-> db
+                                       (get-in [:patients])
+                                       vals)
+          {:keys [dead alive]}     (group-by (fn [p] (prn p)
+                                               (if (get-in p [:deceased :boolean])
+                                                 :dead
+                                                 :alive)) patients)
+          score-multiplicator      (count alive)
+          patients-alive           (count alive)
+          patients-died            (count dead)
+          money-left               (score-calculator :balance alive)
+          patient-health-left      (score-calculator :health alive)
+          dead-patients-money-left (score-calculator :balance dead)
+          score                    (- (+ money-left patient-health-left)
+                                      dead-patients-money-left)
+          total-score              (* score score-multiplicator)]
+      {:patients-alive patients-alive
+       :patients-died  patients-died
+       :money-left money-left
+       :patient-health-left  patient-health-left
+       :total-score total-score
+       :score score
+       :dead-patients-money-left dead-patients-money-left})))
 
 
 (pages/reg-subs-page
  index-page
  (fn [{d :d :as  page} _]
-   (let [score   @(rf/subscribe [:score])]
+   (let [stats   @(rf/subscribe [:stats])]
      [:div.inner.rpgui-container.framed.relative
       [:h1 {:style {:font-size "250%"}} "Игра окончена!"]
       [:hr.golden]
-      [:p (str "Вы набрали " score " очков")]
+      [:table {:style {:width "100%"
+                       :table-layout :fixed
+                       :border "none"
+                       :text-color "white"}}
+       [:tbody
+        [:tr
+         [:td.score-td.score-right-td [:p "Выжило пациентов: "]]
+         [:td.score-td.score-left-td [:p (:patients-alive stats)]]]
+        [:tr
+         [:td.score-td.score-right-td [:p "Умерло пациентов: "]]
+         [:td.score-td.score-left-td [:p (:patients-died  stats)]]]
+        [:tr
+         [:td.score-td.score-right-td [:p "Денег осталось: "]]
+         [:td.score-td.score-left-td [:p (:money-left     stats)]]]
+        [:tr
+         [:td.score-td.score-right-td [:p "Оставшееся здоровье: "]]
+         [:td.score-td.score-left-td [:p (:patient-health-left stats)]]]
+        [:tr
+         [:td.score-td.score-right-td [:p "Денбги мертвецов: "]]
+         [:td.score-td.score-left-td [:p (:dead-patients-money-left stats)]]]
+        [:tr
+         [:td.score-td.score-right-td [:p "Счет: "]]
+         [:td.score-td.score-left-td [:p (:score stats)]]]]]
       [:hr]
+      [:div {:style {:display :flex :justify-content :center}}
+       [:div
+        [:p (str "Финальный счет = "
+                 (:patient-health-left stats)
+                 " + " (:money-left     stats)
+                 " - " (:dead-patients-money-left stats)
+                 " = " (:total-score stats))]]]
       [:br]
       [:div.rpgui-center
        [:div {:style {:width "300px" :margin "0 auto"}}]]
