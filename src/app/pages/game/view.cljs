@@ -96,8 +96,7 @@
         (when-let [t (get-in m [:effects :bacteria])]
           [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}] (plusify t)]])
         (when-let [t (get-in m [:effects :diarrhea])]
-          [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}] (plusify t)]])
-        ]
+          [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}] (plusify t)]])]
 
        ]]]]])
 
