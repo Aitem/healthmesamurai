@@ -47,7 +47,7 @@ body, #root
 
 .game-grid {
     display: grid;
-    grid-template-columns: 1fr 500px;
+    grid-template-columns: 1fr 375px;
 
 }
 .flex {
@@ -143,7 +143,7 @@ body, #root
 .fsgrid {
     display: grid;
     height: 100%;
-    grid-template-columns: 1fr 550px;
+    grid-template-columns: 1fr 375px;
     grid-template-rows: 1fr 70px;
     gap: 0px 0px;
     grid-auto-flow: row;
@@ -209,8 +209,7 @@ body, #root
 
 .ib {
     display: inline-block;
-    width: 238px;
-
+    width: 300px;
 }
 
 .stat-row.red {
