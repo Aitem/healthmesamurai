@@ -165,9 +165,9 @@
                        (assoc acc k (do-stat-damage pt (get-in db [:observations (:id pt)]) (mk-damage {}))))
                      {} (get-in db [:patients]))
          result-pt (reduce-kv
-                     (fn [acc k pt]
-                       (assoc acc k (do-hp-damage pt (get-in db [:observations (:id pt)]))))
-                     {} (get-in db [:patients]))]
+                    (fn [acc k pt]
+                      (assoc acc k (do-hp-damage pt (get-in db [:observations (:id pt)]))))
+                    {} (get-in db [:patients]))]
      (merge
       {:db (-> db
                (assoc :ap {:current nstep

@@ -1,11 +1,16 @@
 (ns app.pages.game.end
   (:require [zframes.pages :as pages]
             [re-frame.core :as rf]
+            [zframes.routing :as routing]
             [zframes.storage :as storage]
             [app.pages.index.model :as model]))
 
 (def index-page ::index-page)
 
+(rf/reg-event-fx
+ ::restart
+ (fn [{db :db} [evid _]]
+   {::routing/redirect {:ev :app.pages.index.model/index-page}}))
 
 (rf/reg-event-fx
   index-page
@@ -97,6 +102,6 @@
       [:br]
       [:div.rpgui-center
        [:button.rpgui-button.rpgui-cursor-default
-        {:on-click #(rf/dispatch [::model/start-game @(rf/subscribe [::model/practitioner-name])])}
-        [:p "Сыграть снова"]]]
+        {:on-click #(rf/dispatch [::restart])}
+        "Сыграть снова"]]
       [:br]])))
