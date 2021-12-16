@@ -12,16 +12,6 @@
  (fn [{db :db} [evid _]]
    {::routing/redirect {:ev :app.pages.index.model/index-page}}))
 
-(rf/reg-event-fx
-  index-page
-  [(rf/inject-cofx ::storage/get [:player])]
-  (fn [{storage :storage  db :db} [pid phase params]]
-    {:db db}))
-
-(rf/reg-sub
-  index-page
-  (fn [db] db))
-
 (defn score-calculator
   [keyword coll]
   (reduce (fn [acc p]
@@ -30,33 +20,55 @@
           0
           coll))
 
+(defn calc-stats [patients]
+  (let [{:keys [dead alive]} (group-by (fn [p] (prn p)
+                                         (if (get-in p [:deceased :boolean])
+                                           :dead
+                                           :alive)) patients)
+        score-multiplicator      (max 1 (count alive))
+        patients-alive           (count alive)
+        patients-died            (count dead)
+        money-left               (score-calculator :balance alive)
+        patient-health-left      (score-calculator :health alive)
+        dead-patients-money-left (score-calculator :balance dead)
+        score                    (+ money-left patient-health-left)
+        total-score              (- (* score score-multiplicator)
+                                    dead-patients-money-left)]
+    {:patients-alive           patients-alive
+     :patients-died            patients-died
+     :score-multiplicator      score-multiplicator
+     :money-left               money-left
+     :patient-health-left      patient-health-left
+     :total-score              total-score
+     :score                    score
+     :dead-patients-money-left dead-patients-money-left}))
+
+
+(rf/reg-event-fx
+  index-page
+  [(rf/inject-cofx ::storage/get [:player])]
+  (fn [{storage :storage  db :db} [pid phase params]]
+    (let [patients (-> db
+                       (get-in [:patients])
+                       vals)
+          stats (calc-stats patients)
+          practitioner (assoc (:player storage) :stats stats)]
+      {:db (assoc db ::stats stats)
+       ::storage/set {:player practitioner}
+       :json/fetch {:uri     (str "/Practitioner/" (:id practitioner))
+                    :method  :put
+                    :body    practitioner}})))
+
+
+(rf/reg-sub
+  index-page
+  (fn [db] db))
+
+
 (rf/reg-sub
   :stats
   (fn [db _]
-    (let [patients                 (-> db
-                                       (get-in [:patients])
-                                       vals)
-          {:keys [dead alive]}     (group-by (fn [p] (prn p)
-                                               (if (get-in p [:deceased :boolean])
-                                                 :dead
-                                                 :alive)) patients)
-          score-multiplicator      (max 1 (count alive))
-          patients-alive           (count alive)
-          patients-died            (count dead)
-          money-left               (score-calculator :balance alive)
-          patient-health-left      (score-calculator :health alive)
-          dead-patients-money-left (score-calculator :balance dead)
-          score                    (+ money-left patient-health-left)
-          total-score              (- (* score score-multiplicator)
-                                      dead-patients-money-left)]
-      {:patients-alive patients-alive
-       :patients-died  patients-died
-       :score-multiplicator score-multiplicator
-       :money-left money-left
-       :patient-health-left  patient-health-left
-       :total-score total-score
-       :score score
-       :dead-patients-money-left dead-patients-money-left})))
+    (::stats db)))
 
 
 (pages/reg-subs-page
