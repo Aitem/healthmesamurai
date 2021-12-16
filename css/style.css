@@ -172,9 +172,19 @@ body, #root
   height: 0px;
   width: 0px;
 }
+.mr-3 {
+    margin-right: 20px;
+}
 
 .my-drop-marker {
     border: 10px solid blue;
+}
+.ac {
+    align-items: center;
+}
+
+.ib {
+    display: inline-block;
 }
 
 .stat-row.red {
