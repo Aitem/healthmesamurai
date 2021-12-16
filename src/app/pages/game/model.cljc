@@ -13,8 +13,8 @@
    {:db (-> db
             (merge storage)
             (assoc :game-step 1)
-            (assoc-in [:ap :total]   9)
-            (assoc-in [:ap :current] 8))
+            (assoc-in [:ap :total]   10)
+            (assoc-in [:ap :current] 10))
     :json/fetch [{:uri "/Medication"
                   :req-id ::mds
                   :success {:event ::save-aidbox}}
@@ -89,37 +89,36 @@
  (fn [{db :db} [_ pt drug]]
    (if (< (:balance pt) (:price drug))
      {:db db}
-     (let [ap      (:ap db)
-           obs     (get-in db [:observations (:id pt)])
-           stats   (get-in db [:observations (:id pt)])
-           stats   (group-by #(get-in % [:code :coding 0 :code]) stats)
-           stats   (reduce-kv (fn [acc k v]
-                                (assoc acc (keyword k) (get-in v [0 :value :Quantity :value])))
-                           {} stats)
+     (when (>= (get-in db [:ap :current]) (:action-point drug))
+       (let [ap      (:ap db)
+             obs     (get-in db [:observations (:id pt)])
+             stats   (get-in db [:observations (:id pt)])
+             stats   (group-by #(get-in % [:code :coding 0 :code]) stats)
+             stats   (reduce-kv (fn [acc k v]
+                                  (assoc acc (keyword k) (get-in v [0 :value :Quantity :value])))
+                                {} stats)
 
-           result-stats  (apply-stats stats (:effects drug))
+             result-stats  (apply-stats stats (:effects drug))
 
-           patient (update pt :balance - (:price drug))
-           new-obs (reduce-kv
-                        (fn [acc k v]
-                          (conj acc
-                                (-> obs
-                                    (->> (filter #(= (name k) (get-in % [:code :coding 0 :code]))))
-                                    first
-                                    (assoc-in [:value :Quantity :value] v))))
-                        []
-                        result-stats)]
+             patient (update pt :balance - (:price drug))
+             new-obs (reduce-kv
+                      (fn [acc k v]
+                        (conj acc
+                              (-> obs
+                                  (->> (filter #(= (name k) (get-in % [:code :coding 0 :code]))))
+                                  first
+                                  (assoc-in [:value :Quantity :value] v))))
+                      []
+                      result-stats)]
 
-       (prn "apply ap" (get-in db [:ap :current]))
-       (prn "apply ap" (:action-point drug))
-       {:db (-> db
-                (assoc-in [:patients (:id pt)] patient)
-                (update-in [:ap :current] - (:action-point drug))
-                (assoc-in [:observations (:id pt)] new-obs))
+         {:db (-> db
+                  (assoc-in  [:patients (:id pt)] patient)
+                  (update-in [:ap :current] - (:action-point drug))
+                  (assoc-in  [:observations (:id pt)] new-obs))
 
-        :json/fetch {:uri (str "/Patient/" (:id pt))
-                     :method :put
-                     :body patient}}))))
+          :json/fetch {:uri (str "/Patient/" (:id pt))
+                       :method :put
+                       :body patient}})))))
 
 (defn mk-damage [_]
   {:sugar        (* -1 (rand-int 2))
@@ -166,6 +165,8 @@
                        (assoc acc k (do-hp-damage pt (get-in db [:observations (:id pt)]))))
                      {} (get-in db [:patients]))]
      {:db (-> db
+              (assoc :ap {:current 10
+                          :total   10})
               (assoc :observations result-obs)
               (assoc :patients     result-pt)
               (update :game-step   inc))})))
