@@ -37,6 +37,7 @@ body, #root
 
 .drag {
     margin-right: 10px;
+    min-width: 200px;
 }
 .aidbox-grid {
     /* display: grid; */
@@ -134,9 +135,32 @@ body, #root
     padding-left:20px;
     padding-right:20px;
     min-width: 740px;
-    max-width: 95%;
+    max-width: 97%;
     margin: 0 auto;
+    height: calc(100vh - 35px);
 }
+
+.fsgrid {
+    display: grid;
+    height: 100%;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 70px;
+    gap: 0px 0px;
+    grid-auto-flow: row;
+    grid-template-areas:
+        "patients aidbox ."
+        "progress progress ."
+        ". . .";
+}
+
+#g-patients { grid-area: patients; }
+
+#g-aidbox { grid-area: aidbox; }
+
+#g-progress { grid-area: progress; }
+
+
+
 
 .draggable, dropped-element {
    cursor: move;
@@ -197,4 +221,9 @@ body, #root
 
 .stat-row.green {
     color: lightgreen;
+}
+
+.aidbox {
+    overflow: scroll;
+    max-height: 50%;
 }

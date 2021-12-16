@@ -6,34 +6,21 @@
 
 (def index-page ::index-page)
 
-
-(def aidbox
-  {"insulin"    {:name    "Insulin"
-                 :img     "./img/insulin.png"
-                 :price   2
-                 :effects {:diarrhea      -1
-                           :sugar        3
-                           :bacteria     1}}
-
-   "amoxicillin" {:name    "Amoxicillin"
-                  :img     "./img/amoxicillin.png"
-                  :price   5
-                  :effects {:temperature  1
-                            :diarrhea      -1
-                            :bacteria     2}}})
-
 (rf/reg-event-fx
  index-page
  [(rf/inject-cofx ::storage/get [:player])]
  (fn [{storage :storage  db :db} [pid phase params]]
    {:db (-> db
             (merge storage)
-            (assoc :aidbox    aidbox)
             (assoc :game-step 1))
-    :json/fetch {:uri "/Patient"
-                 :params {:general-practitioner (get-in storage [:player :id])}
-                 :success {:event ::save-patients}
-                 :req-id ::pts}}))
+    :json/fetch [{:uri "/Medication"
+                  :req-id ::mds
+                  :success {:event ::save-aidbox}
+                  }
+                 {:uri "/Patient"
+                  :params {:general-practitioner (get-in storage [:player :id])}
+                  :success {:event ::save-patients}
+                  :req-id ::pts}]}))
 
 
 (defn patients-map [resp]
@@ -54,6 +41,12 @@
         (group-by #(get-in % [:subject :id]))
         (assoc db :observations))))
 
+(rf/reg-event-fx
+ ::save-aidbox
+ (fn [{db :db} [_ resp]]
+   (let [med (->> resp :data :entry (map :resource)
+                   (reduce (fn [acc v] (assoc acc (:id v) v)) {}))]
+     {:db (assoc db :aidbox med)})))
 
 (rf/reg-event-fx
  ::save-patients
@@ -70,7 +63,7 @@
 (rf/reg-sub ::patients (fn [db _] (:patients db)))
 (rf/reg-sub ::observations (fn [db _] (:observations db)))
 (rf/reg-sub ::game-step (fn [db _] (:game-step db)))
-
+(rf/reg-sub ::aidbox (fn [db _] (:aidbox db)))
 
 (rf/reg-sub
  index-page
@@ -119,9 +112,6 @@
         :json/fetch {:uri (str "/Patient/" (:id pt))
                      :method :put
                      :body patient}}))))
-(rand-int 3)
-(first {:foo "bar" :tar "mar"})
-
 
 (defn mk-damage [_]
   {:sugar        (* -1 (rand-int 2))

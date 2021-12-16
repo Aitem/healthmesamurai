@@ -72,31 +72,32 @@
 (defn plusify [t] (if (> t 0 ) (str "+" t) t))
 
 (defn drug [id m]
-  [dndv/draggable (keyword id)
-   [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable
-    [:h3 (:name m)]
-    [:div.flex
-     [:div.rpgui-icon.empty-slot.tabl-ico
-      [:img.med-img {:src (:img m)}]]
-     [:div.grow-1
-      (when-let [t (get-in m [:price])]
-        [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}] "-" t]])
-      (when-let [t (get-in m [:effects :temperature])]
-        [:div [:span [:img.pt-icn {:src "./img/thermometer.png"}] (plusify t)]])
-      (when-let [t (get-in m [:effects :pressure])]
-        [:div [:span [:img.pt-icn {:src "./img/tonometer.png"}] (plusify t)]])
-      (when-let [t (get-in m [:effects :sugar])]
-        [:div [:span [:img.pt-icn {:src "./img/sugar.png"}] (plusify t)]])
-      (when-let [t (get-in m [:effects :bacteria])]
-        [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}] (plusify t)]])
-      (when-let [t (get-in m [:effects :diarrhea])]
-        [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}] (plusify t)]])
-      
+  [:div.ib
+   [dndv/draggable (keyword id)
+    [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable
+     [:h3 (:name m)]
+     [:div.flex
+      [:div.rpgui-icon.empty-slot.tabl-ico
+       [:img.med-img {:src (:img m)}]]
+      [:div.grow-1
+       (when-let [t (get-in m [:price])]
+         [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}] "-" t]])
+       (when-let [t (get-in m [:effects :temperature])]
+         [:div [:span [:img.pt-icn {:src "./img/thermometer.png"}] (plusify t)]])
+       (when-let [t (get-in m [:effects :pressure])]
+         [:div [:span [:img.pt-icn {:src "./img/tonometer.png"}] (plusify t)]])
+       (when-let [t (get-in m [:effects :sugar])]
+         [:div [:span [:img.pt-icn {:src "./img/sugar.png"}] (plusify t)]])
+       (when-let [t (get-in m [:effects :bacteria])]
+         [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}] (plusify t)]])
+       (when-let [t (get-in m [:effects :diarrhea])]
+         [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}] (plusify t)]])
 
-      ]]]])
+
+       ]]]]])
 
 (defn aidbox [med]
-   [:div.rpgui-container.framed-golden.pos-initial.aidbox.flex
+   [:div.rpgui-container.framed-golden.pos-initial.aidbox
     (into [:<>]
           (for [[id res] med]  ^{:key id}
             (drug id res)))])
@@ -106,35 +107,21 @@
  (fn [{dv :d pts :pts medics :aidbox :as  page} _]
    (let [drag-box-state (rf/subscribe [:dnd/drag-box])]
      (fn [{dv :d pts :pts medics :aidbox obs :obs :as page} _]
-
-       [:div.game.rpgui-container.framed.relative {:style {:padding "0"}}
        (when @drag-box-state [dndv/drag-box])
 
-        [:div.flex
-         [:div.top-left-bordur]
-         [:div.top-bordur.grow-1]]
-        [:div.flex
-         [:div.left-bordur]
-         [:div.grow-1
-          [:div.top-wall]
-          [:div.top-90
-           (when (> (count pts) 1)
-             [:div.flex
-              (into [:<>]
-                    (for [[k v] pts] ^{:key k}
-                      [dndv/drop-zone (keyword k) [drag-golden v (get obs k)]]))])
-           [:img.blood {:src "./img/blood.png"}]
-           [:img.patient {:src "./img/patient.png"}]
-           [:img.koika {:src "./img/koika.png"}]
-           [:img.tumba {:src "./img/tumba.png"}]
-           [:img.wall {:src "./img/wall.png"}]
-           [:img.patient {:src "./img/patient.png"}]
-           [:img.koika {:src "./img/koika.png"}]
-           [:img.tumba {:src "./img/tumba.png"}]
-           [:img.wall {:src "./img/wall.png"}]
-           [:img.patient {:src "./img/patient.png"}]
-           [:img.koika {:src "./img/koika.png"}]]
-          [aidbox medics]
+       [:div.game.rpgui-container.framed.relative
+
+        [:div.fsgrid
+         [:div#g-patients
+          [:div.flex
+           (into [:<>]
+                 (for [[k v] pts] ^{:key k}
+                   [dndv/drop-zone (keyword k) [drag-golden v (get obs k)]]))]]
+
+
+         [:div#g-aidbox [aidbox medics]]
+
+         [:div#g-progress
           [:div.flex.ac
            [:div.grow-1.mr-3
             [:div
@@ -145,11 +132,39 @@
               [:div.rpgui-progress-left-edge]
               [:div.rpgui-progress-right-edge]]]]
 
-           [:div
-            [:button.rpgui-button.golden
-             {:style {:padding-top "0px"}
-              :on-click #(rf/dispatch [::model/next-step])}
-             [:p {:style {:padding-top "5px"}} "Далее " (:game-step page) "/10"]]]]
+           [:button.rpgui-button.golden
+            {:style {:padding-top "0px"}
+             :on-click #(rf/dispatch [::model/next-step])}
+            [:p {:style {:padding-top "5px"}} "Далее " (:game-step page) "/10"]]]]]
+
+        #_[:div.flex
+         [:div.top-left-bordur]
+         [:div.top-bordur.grow-1]]
+        #_[:div.flex
+         [:div.left-bordur]
+         [:div.grow-1
+          [:div.flex
+           [:div.top-wall]
+           [:div.top-90
+            (when (> (count pts) 1)
+              [:div.flex
+               (into [:<>]
+                     (for [[k v] pts] ^{:key k}
+                       [dndv/drop-zone (keyword k) [drag-golden v (get obs k)]]))])
+            [:img.blood {:src "./img/blood.png"}]
+            [:img.patient {:src "./img/patient.png"}]
+            [:img.koika {:src "./img/koika.png"}]
+            [:img.tumba {:src "./img/tumba.png"}]
+            [:img.wall {:src "./img/wall.png"}]
+            [:img.patient {:src "./img/patient.png"}]
+            [:img.koika {:src "./img/koika.png"}]
+            [:img.tumba {:src "./img/tumba.png"}]
+            [:img.wall {:src "./img/wall.png"}]
+            [:img.patient {:src "./img/patient.png"}]
+            [:img.koika {:src "./img/koika.png"}]
+            ]
+           [aidbox medics]]
+
 
           ]]
 
