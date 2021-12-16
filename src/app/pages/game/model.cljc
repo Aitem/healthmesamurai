@@ -88,7 +88,8 @@
 (rf/reg-event-fx
  ::apply-drug
  (fn [{db :db} [_ pt drug]]
-   (if (< (:balance pt) (:price drug))
+   (if (or (< (:balance pt) (:price drug))
+           (get-in pt [:deceased :boolean]))
      {:db db}
      (when (>= (get-in db [:ap :current]) (:action-point drug))
        (let [ap      (:ap db)
