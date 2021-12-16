@@ -132,7 +132,8 @@
        [:div.aidbox
         (let [mmeds (reduce-kv
                      (fn [acc k v]
-                       (if (> (get-in v [:effects (:selected @state)]) 0)
+                       (if (and (> (get-in v [:effects (:selected @state)]) 0)
+                                (>= current (:action-point v)))
                          (assoc acc k v)
                          acc))
                      {} med)

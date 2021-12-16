@@ -14,8 +14,8 @@
    {:db (-> db
             (merge storage)
             (assoc :game-step 1)
-            (assoc-in [:ap :total]   10)
-            (assoc-in [:ap :current] 10))
+            (assoc-in [:ap :total]   1)
+            (assoc-in [:ap :current] 1))
     :json/fetch [{:uri "/Medication"
                   :req-id ::mds
                   :success {:event ::save-aidbox}}
@@ -157,7 +157,8 @@
 (rf/reg-event-fx
  ::next-step
  (fn [{db :db} [_]]
-   (let [result-obs (reduce-kv
+   (let [nstep (inc (:game-step db))
+         result-obs (reduce-kv
                      (fn [acc k pt]
                        (assoc acc k (do-stat-damage pt (get-in db [:observations (:id pt)]) (mk-damage {}))))
                      {} (get-in db [:patients]))
@@ -167,10 +168,10 @@
                      {} (get-in db [:patients]))]
      (merge
       {:db (-> db
-               (assoc :ap {:current 10
-                           :total   10})
+               (assoc :ap {:current nstep
+                           :total   nstep})
                (assoc :observations result-obs)
                (assoc :patients     result-pt)
                (update :game-step   inc))}
-      (when (=  (:game-step db) 9)
+      (when (=  (:game-step db) 10)
         {::routing/redirect {:ev :app.pages.game.end/index-page}})))))
