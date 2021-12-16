@@ -266,5 +266,5 @@ body, #root
 
 .aidbox {
     overflow: scroll;
-    height: calc(100vh - 290px);
+    height: calc(100vh - 330px);
 }
