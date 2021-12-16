@@ -115,6 +115,18 @@
         [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :diarrhea)
                       :src "./img/diarrhea.png"    :class (when (= :diarrhea    (:selected @state)) "active")}]]
        [:hr]
+       [:div.apps
+        [:img  {:width "20px" :src "./dist/img/radio-on.png"}]
+        [:img  {:width "20px" :src "./dist/img/radio-on.png"}]
+        [:img  {:width "20px" :src "./dist/img/radio-on.png"}]
+        [:img  {:width "20px" :src "./dist/img/radio-on.png"}]
+        [:img  {:width "20px" :src "./dist/img/radio-on.png"}]
+        [:img  {:width "20px" :src "./dist/img/radio-off.png"}]
+        [:img  {:width "20px" :src "./dist/img/radio-off.png"}]
+        [:img  {:width "20px" :src "./dist/img/radio-off.png"}]
+        [:img.dsbl  {:width "20px" :src "./dist/img/radio-off.png"}]
+        [:img.dsbl  {:width "20px" :src "./dist/img/radio-off.png"}]]
+       [:hr]
        [:div.aidbox
         (let [mmeds (reduce-kv
                      (fn [acc k v]
