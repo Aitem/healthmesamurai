@@ -126,7 +126,7 @@
    :bacteria     (* -1 (rand-int 2))
    :diarrhea     (* -1 (rand-int 2))})
 
-(defn do-damage [pt obs damage]
+(defn do-stat-damage [pt obs damage]
   (let [stats   (group-by #(get-in % [:code :coding 0 :code]) obs)
         stats   (reduce-kv (fn [acc k v] (assoc acc (keyword k) (get-in v [0 :value :Quantity :value]))) {} stats)
         result-stats  (apply-stats stats damage)]
@@ -140,12 +140,29 @@
      []
      result-stats)))
 
+(defn do-hp-damage [pt obs]
+  (let [stats   (group-by #(get-in % [:code :coding 0 :code]) obs)
+        stats   (reduce-kv (fn [acc k v] (assoc acc (keyword k) (get-in v [0 :value :Quantity :value]))) {} stats)
+        hp-dmg  (reduce-kv (fn [acc k v] (if (< v 2) (inc acc) acc)) 0 stats)
+        new-hp  (max 0 (- (:health pt) hp-dmg))]
+    (if (< new-hp 1)
+      (-> pt
+          (assoc :health 0)
+          (assoc :deceased {:boolean true}))
+      (assoc pt :health new-hp))))
+
+
 (rf/reg-event-fx
  ::next-step
  (fn [{db :db} [_]]
-   (let [result (reduce-kv
-                 (fn [acc k pt]
-                   (assoc acc k (do-damage pt (get-in db [:observations (:id pt)]) (mk-damage {}))))
-                 {}
-                 (get-in db [:patients]))]
-     {:db (-> db (assoc :observations result))})))
+   (let [result-obs (reduce-kv
+                     (fn [acc k pt]
+                       (assoc acc k (do-stat-damage pt (get-in db [:observations (:id pt)]) (mk-damage {}))))
+                     {} (get-in db [:patients]))
+         result-pt (reduce-kv
+                     (fn [acc k pt]
+                       (assoc acc k (do-hp-damage pt (get-in db [:observations (:id pt)]))))
+                     {} (get-in db [:patients]))]
+     {:db (-> db
+              (assoc :observations result-obs)
+              (assoc :patients     result-pt))})))
