@@ -99,9 +99,9 @@
 
 (defonce state (r/atom {:selected :temperature}))
 
-(defn aidbox [med]
+(defn aidbox [_ _]
   (let [set-fltr #(swap! state assoc :selected %)]
-    (fn [med]
+    (fn [med {:keys [total current]:as ap}]
       [:div.rpgui-container.framed-golden.pos-initial
        [:div.tab
         [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :temperature)
@@ -116,16 +116,17 @@
                       :src "./img/diarrhea.png"    :class (when (= :diarrhea    (:selected @state)) "active")}]]
        [:hr]
        [:div.apps
-        [:img  {:width "20px" :src "./dist/img/radio-on.png"}]
-        [:img  {:width "20px" :src "./dist/img/radio-on.png"}]
-        [:img  {:width "20px" :src "./dist/img/radio-on.png"}]
-        [:img  {:width "20px" :src "./dist/img/radio-on.png"}]
-        [:img  {:width "20px" :src "./dist/img/radio-on.png"}]
-        [:img  {:width "20px" :src "./dist/img/radio-off.png"}]
-        [:img  {:width "20px" :src "./dist/img/radio-off.png"}]
-        [:img  {:width "20px" :src "./dist/img/radio-off.png"}]
-        [:img.dsbl  {:width "20px" :src "./dist/img/radio-off.png"}]
-        [:img.dsbl  {:width "20px" :src "./dist/img/radio-off.png"}]]
+        (into [:<>]
+              (for [a (repeat current "x")]
+                [:img  {:width "20px" :src "./dist/img/radio-on.png"}]))
+        (into [:<>]
+              (for [a (repeat (- total current) "x")]
+                [:img  {:width "20px" :src "./dist/img/radio-off.png"}]))
+
+        (into [:<>]
+              (for [a (repeat (- 10 total) "x")]
+                [:img.dsbl {:width "20px" :src "./dist/img/radio-off.png"}]))]
+
        [:hr]
        [:div.aidbox
         (let [mmeds (reduce-kv
@@ -179,7 +180,7 @@
 
 (pages/reg-subs-page
  model/index-page
- (fn [{dv :d pts :pts medics :aidbox :as  page} _]
+ (fn [{dv :d pts :pts medics :aidbox ap :ap :as  page} _]
    (let [drag-box-state (rf/subscribe [:dnd/drag-box])
          patients (rf/subscribe [::model/patients])]
      (fn [{dv :d pts :pts medics :aidbox obs :obs :as page} _]
@@ -195,21 +196,10 @@
                    [dndv/drop-zone (keyword k)
                     [:div
                      [drag-golden v (get obs k)]
-                     [koika idx @patients]]]))]
-
-          #_[:div {:style {:margin-top "20px"}}
-           [:img.patient {:src "./img/patient.png"}]
-           [:img.koika   {:src "./img/koika.png"}]
-           [:img.tumba   {:src "./img/tumba.png"}]
-           [:img.wall    {:src "./img/wall.png"}]
-           [:img.patient {:src "./img/patient.png"}]
-           [:img.koika   {:src "./img/koika.png"}]
-           ]
-          ]
-
+                     [koika idx @patients]]]))]]
 
          [:div#g-aidbox
-          [aidbox medics]]
+          [aidbox medics ap]]
 
          [:div#g-progress
           [:div.flex.ac
@@ -225,36 +215,4 @@
            [:button.rpgui-button.golden
             {:style {:padding-top "0px"}
              :on-click #(rf/dispatch [::model/next-step])}
-            [:p {:style {:padding-top "5px"}} "Далее " (:game-step page) "/10"]]]]]
-
-        #_[:div.flex
-         [:div.top-left-bordur]
-         [:div.top-bordur.grow-1]]
-        #_[:div.flex
-         [:div.left-bordur]
-         [:div.grow-1
-          [:div.flex
-           [:div.top-wall]
-           [:div.top-90
-            (when (> (count pts) 1)
-              [:div.flex
-               (into [:<>]
-                     (for [[k v] pts] ^{:key k}
-                       [dndv/drop-zone (keyword k) [drag-golden v (get obs k)]]))])
-            [:img.blood {:src "./img/blood.png"}]
-            [:img.patient {:src "./img/patient.png"}]
-            [:img.koika {:src "./img/koika.png"}]
-            [:img.tumba {:src "./img/tumba.png"}]
-            [:img.wall {:src "./img/wall.png"}]
-            [:img.patient {:src "./img/patient.png"}]
-            [:img.koika {:src "./img/koika.png"}]
-            [:img.tumba {:src "./img/tumba.png"}]
-            [:img.wall {:src "./img/wall.png"}]
-            [:img.patient {:src "./img/patient.png"}]
-            [:img.koika {:src "./img/koika.png"}]
-            ]
-           [aidbox medics]]
-
-          ]]
-
-        [:br]]))))
+            [:p {:style {:padding-top "5px"}} "Далее " (:game-step page) "/10"]]]]]]))))

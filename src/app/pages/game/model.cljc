@@ -12,11 +12,12 @@
  (fn [{storage :storage  db :db} [pid phase params]]
    {:db (-> db
             (merge storage)
-            (assoc :game-step 1))
+            (assoc :game-step 1)
+            (assoc-in [:ap :total]   5)
+            (assoc-in [:ap :current] 2))
     :json/fetch [{:uri "/Medication"
                   :req-id ::mds
-                  :success {:event ::save-aidbox}
-                  }
+                  :success {:event ::save-aidbox}}
                  {:uri "/Patient"
                   :params {:general-practitioner (get-in storage [:player :id])}
                   :success {:event ::save-patients}
@@ -64,6 +65,7 @@
 (rf/reg-sub ::observations (fn [db _] (:observations db)))
 (rf/reg-sub ::game-step (fn [db _] (:game-step db)))
 (rf/reg-sub ::aidbox (fn [db _] (:aidbox db)))
+(rf/reg-sub ::ap (fn [db _] (:ap db)))
 
 (rf/reg-sub
  index-page
@@ -71,9 +73,11 @@
  :<- [::observations]
  :<- [::aidbox]
  :<- [::game-step]
- (fn [[pts obs aids gs] _]
+ :<- [::ap]
+ (fn [[pts obs aids gs ap] _]
    {:pts pts
     :obs obs
+    :ap ap
     :game-step gs
     :aidbox aids}))
 
