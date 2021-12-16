@@ -59,7 +59,7 @@
             pt-name   (rand-nth (vec (get free-names pt-gender)))
             pt-req {:request  {:method "POST" :url "/Patient"}
                     :resource {:name                [{:given [pt-name]}]
-                               :balance             20
+                               :balance             30
                                :health              10
                                :gender              pt-gender
                                :generalPractitioner [{:id id :resourceType "Practitioner"}]

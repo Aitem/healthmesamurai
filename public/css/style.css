@@ -49,6 +49,12 @@ body, #root
     display: grid;
     grid-template-columns: 1fr 375px;
 
+
+}
+
+.grid-grug {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 .flex {
     display: flex;

@@ -81,20 +81,23 @@
       [:div.rpgui-icon.empty-slot.tabl-ico
        [:img.med-img {:src (:image m)}]]
       [:div.grow-1
-       [:span "AP: " (:action-point m)]
-       (when-let [t (get-in m [:price])]
-         [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}]  t]])
-       (when-let [t (get-in m [:effects :temperature])]
-         [:div [:span [:img.pt-icn {:src "./img/thermometer.png"}] (plusify t)]])
-       (when-let [t (get-in m [:effects :pressure])]
-         [:div [:span [:img.pt-icn {:src "./img/tonometer.png"}] (plusify t)]])
-       (when-let [t (get-in m [:effects :sugar])]
-         [:div [:span [:img.pt-icn {:src "./img/sugar.png"}] (plusify t)]])
-       (when-let [t (get-in m [:effects :bacteria])]
-         [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}] (plusify t)]])
-       (when-let [t (get-in m [:effects :diarrhea])]
-         [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}] (plusify t)]])
+       [:div.grid-grug
+        [:div {:style {:margin-bottom "5px"}}
+         [:span [:img.pt-icn {:src "./dist/img/radio-on.png"}] (:action-point m)]]
+        [:div {:style {:margin-bottom "5px"}}
+         [:span [:img.pt-icn {:src "./img/coin_gold.png"}]     (:price m)]]
 
+        (when-let [t (get-in m [:effects :temperature])]
+          [:div [:span [:img.pt-icn {:src "./img/thermometer.png"}] (plusify t)]])
+        (when-let [t (get-in m [:effects :pressure])]
+          [:div [:span [:img.pt-icn {:src "./img/tonometer.png"}] (plusify t)]])
+        (when-let [t (get-in m [:effects :sugar])]
+          [:div [:span [:img.pt-icn {:src "./img/sugar.png"}] (plusify t)]])
+        (when-let [t (get-in m [:effects :bacteria])]
+          [:div [:span [:img.pt-icn {:src "./img/orc_green.png"}] (plusify t)]])
+        (when-let [t (get-in m [:effects :diarrhea])]
+          [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}] (plusify t)]])
+        ]
 
        ]]]]])
 
