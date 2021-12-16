@@ -9,7 +9,8 @@
  model/index-page
  (fn [{d :d :as  page} _]
    (let [gettext (fn [e] (-> e .-target .-value))
-         emit    (fn [e] (rf/dispatch [::model/practitioner-name (gettext e)])) ]
+         emit    (fn [e] (rf/dispatch [::model/practitioner-name (gettext e)]))
+         pr-name @(rf/subscribe [::model/practitioner-name])]
      [:div.inner.rpgui-container.framed.relative
       [:h1 {:style {:font-size "250%"}} "Health me, Samurai!"]
       [:hr.golden]
@@ -23,11 +24,15 @@
         [:input {:type "text"
                  :minLength 2
                  :placeholder "Ваше имя"
-                 :value @(rf/subscribe [::model/practitioner-name])
+                 :value pr-name
                  :on-change emit}]]]
       [:br]
       [:div.rpgui-center
-       [:button.rpgui-button.rpgui-cursor-default
-        {:on-click #(rf/dispatch [::model/start-game @(rf/subscribe [::model/practitioner-name])])}
-        [:p "Начать"]]]
+       (if (<= 2 (count (str pr-name)))
+         [:button.rpgui-button.rpgui-cursor-default
+          {:on-click #(rf/dispatch [::model/start-game @(rf/subscribe [::model/practitioner-name])])}
+          [:p "Начать"]]
+         [:button.rpgui-button.rpgui-cursor-default.grayscale
+          {:disabled true}
+          [:p "Начать"]])]
       [:br]])))
