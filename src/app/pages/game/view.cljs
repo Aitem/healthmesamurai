@@ -78,7 +78,7 @@
      [:h3 (:name m)]
      [:div.flex
       [:div.rpgui-icon.empty-slot.tabl-ico
-       [:img.med-img {:src (:img m)}]]
+       [:img.med-img {:src (:image m)}]]
       [:div.grow-1
        (when-let [t (get-in m [:price])]
          [:div [:span [:img.pt-icn {:src "./img/coin_gold.png"}] "-" t]])
