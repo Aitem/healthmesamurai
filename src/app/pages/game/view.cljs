@@ -147,7 +147,10 @@
 (defn koika-1 [patient]
   [:div
    [:img.tumba   {:src "./img/tumba.png"}]
-   [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))}]
+   [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
+                  :class (if (get-in patient [:deceased :boolean])
+                           "deceased"
+                           "alive")}]
    [:img.koika   {:src "./img/koika.png"}]
    [:img.wall    {:src "./img/wall.png"}]
 
@@ -156,16 +159,21 @@
 (defn koika-2 [patient]
   [:div
    [:img.blood   {:src "./img/blood.png"}]
-   [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))}]
+   [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
+                  :class (if (get-in patient [:deceased :boolean])
+                           "deceased"
+                           "alive")}]
    [:img.koika   {:src "./img/koika.png"}]
    [:img.tumba   {:src "./img/tumba.png"}]
    [:img.wall    {:src "./img/wall.png"}]
    ])
 
 (defn koika-3 [patient]
-  (prn patient)
   [:div
-   [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))}]
+   [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
+                  :class (if (get-in patient [:deceased :boolean])
+                           "deceased"
+                           "alive")}]
    [:img.koika   {:src "./img/koika.png"}]
    [:img.tumba   {:src "./img/tumba.png"}]
    ])
