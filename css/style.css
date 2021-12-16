@@ -30,6 +30,19 @@ body, #root
     position: initial !important;
 }
 
+.score-right-td {
+    border: none;
+    width: 60%;
+    text-align: right;
+}
+
+.score-left-td {
+    border: none;
+    width: 40%;
+    text-align: left;
+}
+
+
 .med-img {
     width: 60px;
     height: 60px;
