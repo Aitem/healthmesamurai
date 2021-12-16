@@ -109,7 +109,7 @@
      (fn [{dv :d pts :pts medics :aidbox obs :obs :as page} _]
        (when @drag-box-state [dndv/drag-box])
 
-       [:div.game.rpgui-container.framed.relative
+       [:div.game.rpgui-container.framed.relative.draggable
 
         [:div.fsgrid
          [:div#g-patients
@@ -119,7 +119,8 @@
                    [dndv/drop-zone (keyword k) [drag-golden v (get obs k)]]))]]
 
 
-         [:div#g-aidbox [aidbox medics]]
+         [:div#g-aidbox
+          [aidbox medics]]
 
          [:div#g-progress
           [:div.flex.ac
@@ -164,7 +165,6 @@
             [:img.koika {:src "./img/koika.png"}]
             ]
            [aidbox medics]]
-
 
           ]]
 
