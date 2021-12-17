@@ -211,7 +211,7 @@
 
 (defn koika-3 [patient]
   [:div.pt-koika
-   #_[:img.a.x4.wall    {:src "./img/wall.png"}]
+   [:img.a.x4.tumba   {:src "./img/tumba.png"}]
    [:img.a.x3.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
                        :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
    [:img.a.x4.koika   {:src "./img/koika.png"}]])
@@ -232,7 +232,7 @@
        [:div.top-wall] [:div.top-door] [:div.logo]
        ;; [:div.left-racovina] [:div.lab] [:div.wall-blood]
 
-       [:div.flex.around {:style {:padding-top "220px"}}
+       [:div.flex.around.kik
         (for [[idx [k v]] (map-indexed vector pts)]
           [:div {:key idx :class (when (get-in v [:deceased :boolean]) "dsbl")}
            [koika idx v]])]]
