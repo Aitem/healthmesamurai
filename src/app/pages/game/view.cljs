@@ -266,4 +266,6 @@
            [:button.rpgui-button.golden
             {:style {:padding-top "0px" :width "370px"}
              :on-click #(rf/dispatch [::model/next-step])}
-            [:p {:style {:padding-top "5px"}} "Далее " (:game-step page) "/10"]]]]]]))))
+            (if (= 10 (:game-step page))
+              [:p {:style {:padding-top "5px"}} "Конец " (:game-step page) "/10"]
+              [:p {:style {:padding-top "5px"}} "Следующий день " (:game-step page) "/10"])]]]]]))))
