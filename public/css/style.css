@@ -264,10 +264,13 @@ body, #root
 .mr-3 {
     margin-right: 20px;
 }
+.around {
+    justify-content: space-around;
+}
 
 .my-drop-marker {
     /* border: 10px solid blue; */
-    box-shadow: 0px 0px 20px 10px rgba(249, 224, 31, 0.31);
+    box-shadow: 0px 0px 25px 14px rgba(249, 224, 31, 0.31);
     width: 280px;
     height: 245px;
     position: absolute;

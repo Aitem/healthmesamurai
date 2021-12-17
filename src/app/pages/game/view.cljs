@@ -177,7 +177,7 @@
                            "alive")}]
    [:img.koika   {:src "./img/koika.png"}]
    [:img.tumba   {:src "./img/tumba.png"}]
-   [:img.wall    {:src "./img/wall.png"}]
+   ;;[:img.wall    {:src "./img/wall.png"}]
    ])
 
 (defn koika-3 [patient]
@@ -207,7 +207,7 @@
 
         [:div.fsgrid
          [:div#g-patients
-          [:div.flex
+          [:div.flex.around
            (into [:<>]
                  (for [[idx [k v]] (map-indexed vector pts)] ^{:key k}
                    [dndv/drop-zone (keyword k)
