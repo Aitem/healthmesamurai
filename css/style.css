@@ -17,6 +17,7 @@ body, #root
 }
 #app .pt {
     margin-right: 10px;
+    width: 280px;
 }
 #app .p-8 {
     padding: 8px;
@@ -265,7 +266,12 @@ body, #root
 }
 
 .my-drop-marker {
-    border: 10px solid blue;
+    /* border: 10px solid blue; */
+    box-shadow: 0px 0px 20px 10px rgba(249, 224, 31, 0.31);
+    width: 280px;
+    height: 245px;
+    position: absolute;
+    z-index: 100;
 }
 .ac {
     align-items: center;
