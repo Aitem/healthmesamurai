@@ -275,16 +275,6 @@ body, #root
 }
 
 
-.drop-zone-highlight {
-        box-shadow: 0px 0px 25px 14px rgba(249, 224, 31, 0.81);
-    width: 280px;
-    height: 230px;
-    border-radius: 10px;
-    position: absolute;
-    z-index: 100;
-
-
-}
 .my-drop-marker {
     /* border: 10px solid blue; */
     box-shadow: 0px 0px 25px 14px rgba(249, 224, 31, 0.81);
