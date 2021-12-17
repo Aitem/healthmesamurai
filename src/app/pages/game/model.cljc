@@ -6,6 +6,7 @@
             [clojure.string :as str]))
 
 (def index-page ::index-page)
+(def init-ap 5)
 
 (rf/reg-event-fx
  index-page
@@ -14,8 +15,8 @@
    {:db (-> db
             (merge storage)
             (assoc :game-step 1)
-            (assoc-in [:ap :total]   1)
-            (assoc-in [:ap :current] 1))
+            (assoc-in [:ap :total]   init-ap)
+            (assoc-in [:ap :current] init-ap))
     :json/fetch [{:uri "/Medication"
                   :req-id ::mds
                   :success {:event ::save-aidbox}}
@@ -181,8 +182,8 @@
                     {} (get-in db [:patients]))]
      (merge
       {:db (-> db
-               (assoc :ap {:current nstep
-                           :total   nstep})
+               (assoc :ap {:current (min 10 (+ init-ap (:game-step db)))
+                           :total   (min 10 (+ init-ap (:game-step db)))})
                (assoc :observations result-obs)
                (assoc :patients     result-pt)
                (update :game-step   inc))
