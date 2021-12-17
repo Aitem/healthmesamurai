@@ -202,11 +202,11 @@
                   :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
    [:img.koika   {:src "./img/koika.png"}]
    [:img.tumba   {:src "./img/tumba.png"}]
-   ;;[:img.wall    {:src "./img/wall.png"}]
    ])
 
 (defn koika-3 [patient]
-  [:div {:style {:margin-top "92px"}}
+  [:div
+   [:img.wall    {:src "./img/wall.png"}]
    [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
                   :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
    [:img.koika   {:src "./img/koika.png"}]
@@ -235,8 +235,9 @@
         [:div.top-wall]
         [:div.top-door]
 
-        [:div.left-racovina]
-        [:div.lab]
+        ;; [:div.left-racovina]
+        ;; [:div.lab]
+        ;; [:div.wall-blood]
 
         [:div.fsgrid
          [:div#g-patients

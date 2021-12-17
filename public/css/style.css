@@ -294,6 +294,18 @@ body, #root
     z-index: -1;
 }
 
+.wall-blood {
+    background-image: url(./../img/wall-blood.png);
+    width: 201px; height: 508px;
+    background-size: 130px;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 58px;
+    left: 25%;
+    z-index: -1;
+    opacity: 0.9;
+}
+
 
 
 
