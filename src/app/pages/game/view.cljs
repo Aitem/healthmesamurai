@@ -228,18 +228,12 @@
         (when @drag-box-state [dndv/drag-box])
 
 
-        [:div.top-left-bordur]
-        [:div.top-bordur]
-        [:div.top-right-bordur]
-
-        [:div.bottom-left-bordur]
-        [:div.bottom-bordur]
-        [:div.bottom-right-bordur]
-
-        [:div.left-bordur]
-        [:div.right-bordur]
+        [:div.top-left-bordur] [:div.top-bordur] [:div.top-right-bordur]
+        [:div.bottom-left-bordur] [:div.bottom-bordur] [:div.bottom-right-bordur]
+        [:div.left-bordur] [:div.right-bordur]
 
         [:div.top-wall]
+        [:div.top-door]
 
         [:div.fsgrid
          [:div#g-patients
