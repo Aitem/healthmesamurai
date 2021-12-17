@@ -95,25 +95,41 @@ body, #root
 .flex {
     display: flex;
 }
-.koika {
-    width: 110px;
+.x4 {
+    transform: scale(4);
 }
-.wall {
-    height: 290px;
-    margin-right: 10px;
-    margin-left: 10px;
+.x3 {
+    transform: scale(3);
 }
 
-.tumba {
-    width: 65px;
-    margin-bottom: 150px;
-    margin-left: 5px;
+.pt-koika {
+    position: relative;
+    min-height: 300px;
 }
-.blood {
-    width: 70px;
-    margin-bottom: 150px;
-    margin-right: 10px;
+.pt-koika .tumba {
+    left: 164px; top: 63px;
 }
+
+.pt-koika .wall {
+    right: 20px; top: 80px;
+}
+
+.pt-koika .koika {
+    left: 100px; top: 100px;
+}
+
+.pt-koika .patient {
+    left: 94px; top: 100px;
+    z-index: 4;
+}
+
+.pt-koika .blood {
+    left: 40px; top: 55px; z-index: 4;
+}
+
+.a { position: absolute;}
+
+
 
 .grow-1 {
     flex-grow: 1;
@@ -135,7 +151,6 @@ body, #root
     margin-left: 60px;
 }
 .patient {
-    width: 128px;
     position: relative;
     margin-right: -118px;
     margin-bottom: 80px;
