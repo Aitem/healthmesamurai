@@ -109,44 +109,40 @@
       {:style {:height "calc(100vh - 35px)"}}
       [:h1 {:style {:font-size "250%"}} "Игра окончена!"]
       [:hr.golden]
+
       [:table {:style {:width "100%"
-                       :table-layout :fixed
-                       :border "none"}}
+                             :table-layout :fixed
+                             :border "none"}}
        [:tbody
         [:tr
          [:td.score-td.score-right-td [:p "Выжило пациентов: "]]
-         [:td.score-td.score-left-td [:p (:patients-alive stats)]]]
-        [:tr
+         [:td.score-td.score-left-td [:p (:patients-alive stats)]]
          [:td.score-td.score-right-td [:p "Денег осталось: "]]
          [:td.score-td.score-left-td [:p (:money-left     stats)]]]
         [:tr
          [:td.score-td.score-right-td [:p "Оставшееся здоровье: "]]
-         [:td.score-td.score-left-td [:p (:patient-health-left stats)]]]
-        [:tr
-         [:td.score-td.score-right-td [:p "Денбги мертвецов: "]]
+         [:td.score-td.score-left-td [:p (:patient-health-left stats)]]
+         [:td.score-td.score-right-td [:p "Деньги умерших: "]]
          [:td.score-td.score-left-td [:p (:dead-patients-money-left stats)]]]
         ]]
       [:hr]
       [:div {:style {:display :flex :justify-content :center}}
-       [:div
-        [:p (str "Финальный счет = ("
+       [:div {:style {:text-align "center"}}
+        [:h1 {:style {:font-size "210%"}} "Финальный счет: " (:total-score stats)]
+        [:p (str "("
                  (:patient-health-left stats)
                  " + " (:money-left stats)
                  ") * " (:score-multiplicator stats) " - " (:dead-patients-money-left stats)
                  " = " (:total-score stats))]]]
       [:hr]
       (let [scoreboard @(rf/subscribe [::scoreboard])]
-        [:div {:style {:padding-left "150px"
+        [:div #_{:style {:padding-left "150px"
                        :padding-right "150px"}}
          [:div.rpgui-container.framed-golden.pos-initial
           {:style {:overflow-y "scroll"
-                   :height "200px"}}
-          [:table {:style {:border "none"}}
-           [:thead
-            [:tr
-             [:th [:p "#"]]
-             [:th [:p "Имя"]]
-             [:th [:p "Счёт"]]]]
+                   :height "400px"}}
+          [:table.score {:style {:border "none"}}
+           [:thead {:style {:font-size "16px"}} [:tr [:th [:h1 "#"]] [:th [:h1 "Имя"]] [:th [:h1 "Счёт"]]]]
            [:tbody
             (for [[number {:keys [id name score]}] (map-indexed vector scoreboard)]
               ^{:key id}

@@ -42,7 +42,7 @@ body, #root
 
 .score-left-td {
     border: none;
-    width: 40%;
+    width: 20%;
     text-align: left;
 }
 
@@ -65,8 +65,11 @@ body, #root
 .game-grid {
     display: grid;
     grid-template-columns: 1fr 375px;
+}
 
-
+.score p {
+    line-height: 10px !important;
+    margin: 5px;
 }
 
 .grid-grug {
