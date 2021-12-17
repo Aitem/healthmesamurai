@@ -114,9 +114,6 @@
          [:td.score-td.score-right-td [:p "Выжило пациентов: "]]
          [:td.score-td.score-left-td [:p (:patients-alive stats)]]]
         [:tr
-         [:td.score-td.score-right-td [:p "Умерло пациентов: "]]
-         [:td.score-td.score-left-td [:p (:patients-died  stats)]]]
-        [:tr
          [:td.score-td.score-right-td [:p "Денег осталось: "]]
          [:td.score-td.score-left-td [:p (:money-left     stats)]]]
         [:tr
@@ -125,9 +122,7 @@
         [:tr
          [:td.score-td.score-right-td [:p "Денбги мертвецов: "]]
          [:td.score-td.score-left-td [:p (:dead-patients-money-left stats)]]]
-        [:tr
-         [:td.score-td.score-right-td [:p "Счет: "]]
-         [:td.score-td.score-left-td [:p (:score stats)]]]]]
+        ]]
       [:hr]
       [:div {:style {:display :flex :justify-content :center}}
        [:div
