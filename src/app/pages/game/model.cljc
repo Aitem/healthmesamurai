@@ -148,7 +148,10 @@
 (defn do-hp-damage [pt obs]
   (let [stats   (group-by #(get-in % [:code :coding 0 :code]) obs)
         stats   (reduce-kv (fn [acc k v] (assoc acc (keyword k) (get-in v [0 :value :Quantity :value]))) {} stats)
-        hp-dmg  (reduce-kv (fn [acc k v] (if (or (> v 1) (< v -1)) (inc acc) acc)) 0 stats)
+        hp-dmg  (reduce-kv
+                 (fn [acc k v] (if (or (> v 1) (< v -1)) (inc acc) acc))
+                 0 stats)
+        hp-dmg  (if (> hp-dmg 0) 1 0)
         new-hp  (max 0 (- (:health pt) hp-dmg))]
     (if (< new-hp 1)
       (-> pt
