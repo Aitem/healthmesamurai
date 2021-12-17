@@ -81,7 +81,7 @@
         ds (rf/subscribe [::model/selected-drug])]
     (fn [id m]
       [:div.ib
-       [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable.hoverable
+       [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable
         {:on-click #(rf/dispatch [::model/select-drug m])}
         [:h3 (:name m)]
         [:div.flex
@@ -237,6 +237,7 @@
         ;; [:div.left-racovina]
         ;; [:div.lab]
         ;;[:div.wall-blood]
+        [:div.logo]
 
         [:div.fsgrid
          [:div#g-patients
