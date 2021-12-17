@@ -148,8 +148,8 @@
                          acc))
                      {} med)
               mmeds  (sort-by  (juxt
-                                #(get-in (val %) [:action-point])
-                                #(- (get-in (val %) [:effects (:selected @state)]))
+                                ;;#(get-in (val %) [:action-point])
+                                #(get-in (val %) [:effects (:selected @state)])
                                 )  mmeds)]
           (into
            [:<>]
