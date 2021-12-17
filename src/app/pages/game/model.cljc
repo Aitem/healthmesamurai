@@ -36,12 +36,17 @@
 (rf/reg-event-db
  ::save-obs
  (fn [db [_ resp]]
-   (->> resp
-        :data
-        :entry
-        (map :resource)
-        (group-by #(get-in % [:subject :id]))
-        (assoc db :observations))))
+   (let [obs (->> resp
+                  :data
+                  :entry
+                  (map :resource)
+                  (group-by #(get-in % [:subject :id])))
+         pt (-> db :patients second second)
+         pt-ob (get obs (:id pt))]
+
+     (-> db
+         (assoc :selected-pt {:pt pt :obs pt-ob })
+         (assoc :observations obs)))))
 
 (rf/reg-event-fx
  ::save-aidbox
@@ -167,8 +172,7 @@
                                 (fn [r]
                                   {:request  {:method "PUT" :url  (str "/" (:resourceType r) "/" (:id r))}
                                    :resource r})
-                                resources)}
-                 :success {:event ::save-init-data}}}))
+                                resources)}}}))
 
 (rf/reg-event-db
  ::select-pt

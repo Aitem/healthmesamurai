@@ -26,14 +26,13 @@
    [:span {:style {:margin-left "4px"}} "+"]])
 
 
-
 (defn drag-golden [_ _]
   (let [pt-state (rf/subscribe [::model/selected-pt])]
     (fn [pt obs]
       (let [o (group-by #(get-in % [:code :coding 0 :code]) obs)
             death? (get-in pt [:deceased :boolean])
             d death?]
-        [:div.rpgui-container.pos-initial.drag.p-8.pt
+        [:div.rpgui-container.pos-initial.drag.p-8.pt.hoverable
         {:on-click #(rf/dispatch [::model/select-pt pt obs])
          :class (if death?
                   "framed"
@@ -82,7 +81,7 @@
         ds (rf/subscribe [::model/selected-drug])]
     (fn [id m]
       [:div.ib
-       [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable
+       [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable.hoverable
         {:on-click #(rf/dispatch [::model/select-drug m])}
         [:h3 (:name m)]
         [:div.flex
@@ -130,8 +129,10 @@
 
 (defonce state (r/atom {:selected :temperature}))
 
+
 (defn aidbox [_ _]
-  (let [set-fltr #(swap! state assoc :selected %)]
+  (let [set-fltr #(swap! state assoc :selected %)
+        pt (rf/subscribe [::model/selected-pt])]
     (fn [med {:keys [total current]:as ap}]
       [:div.rpgui-container.framed-golden.pos-initial
        [:div.tab
@@ -223,9 +224,8 @@
  (fn [_ _]
    (let [drag-box-state (rf/subscribe [:dnd/drag-box])]
      (fn [{dv :d pts :pts medics :aidbox obs :obs ap :ap :as  page} _]
-       [:div.game.rpgui-container.framed.relative
+       [:div.game.rpgui-container.framed.relative.rpgui-cursor-grab-open
         (when @drag-box-state [dndv/drag-box])
-
 
         [:div.top-left-bordur] [:div.top-bordur] [:div.top-right-bordur]
         [:div.bottom-left-bordur] [:div.bottom-bordur] [:div.bottom-right-bordur]
