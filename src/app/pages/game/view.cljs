@@ -135,32 +135,8 @@
         pt (rf/subscribe [::model/selected-pt])]
     (fn [med {:keys [total current]:as ap}]
       [:div.rpgui-container.framed-golden.pos-initial
-       [:div.tab
-        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :temperature)
-                                         :src "./img/thermometer.png" :class (when (= :temperature (:selected @state)) "active")}]
-        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :pressure)
-                                         :src "./img/tonometer.png"   :class (when (= :pressure    (:selected @state)) "active")}]
-        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :sugar)
-                                         :src "./img/sugar.png"       :class (when (= :sugar       (:selected @state)) "active")}]
-        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :bacteria)
-                                         :src "./img/bacteria.png"   :class (when (= :bacteria    (:selected @state)) "active")}]
-        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :diarrhea)
-                                         :src "./img/diarrhea.png"    :class (when (= :diarrhea    (:selected @state)) "active")}]]
-       [:hr]
-       [:div.apps
-        (into [:<>]
-              (for [a (repeat current "x")]
-                [:img  {:width "20px" :src "./dist/img/radio-on.png"}]))
-        (into [:<>]
-              (for [a (repeat (- total current) "x")]
-                [:img {:style {:filter "grayscale(100%)"}
-                       :width "20px" :src "./dist/img/radio-on.png"}]))
 
-        (into [:<>]
-              (for [a (repeat (- 10 total) "x")]
-                [:img.dsbl {:width "20px" :src "./dist/img/radio-off.png"}]))]
 
-       [:hr]
        [:div.aidbox
         (let [mmeds (reduce-kv
                      (fn [acc k v]
@@ -180,16 +156,44 @@
             (into
              [:<>]
              (for [[id res] mmeds]  ^{:key id}
-               [drug id res]))))]])))
+               [drug id res]))))]
+       [:div.tab
+        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :temperature)
+                                         :src "./img/thermometer.png" :class (when (= :temperature (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :pressure)
+                                         :src "./img/tonometer.png"   :class (when (= :pressure    (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :sugar)
+                                         :src "./img/sugar.png"       :class (when (= :sugar       (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :bacteria)
+                                         :src "./img/bacteria.png"   :class (when (= :bacteria    (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :diarrhea)
+                                         :src "./img/diarrhea.png"    :class (when (= :diarrhea    (:selected @state)) "active")}]]
+
+       [:hr]
+       [:div.apps
+        (into [:<>]
+              (for [a (repeat current "x")]
+                [:img  {:width "20px" :src "./dist/img/radio-on.png"}]))
+        (into [:<>]
+              (for [a (repeat (- total current) "x")]
+                [:img {:style {:filter "grayscale(100%)"}
+                       :width "20px" :src "./dist/img/radio-on.png"}]))
+
+        (into [:<>]
+              (for [a (repeat (- 10 total) "x")]
+                [:img.dsbl {:width "20px" :src "./dist/img/radio-off.png"}]))]
+
+       [:hr]
+
+
+       ])))
 
 
 (defn koika-1 [patient]
   [:div.pt-koika
    [:img.a.x4.tumba   {:src "./img/tumba.png"}]
    [:img.a.x3.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
-                  :class (if (get-in patient [:deceased :boolean])
-                           "deceased"
-                           "alive")}]
+                  :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
    [:img.a.x4.koika   {:src "./img/koika.png"}]
    [:img.a.x4.wall    {:src "./img/wall.png"}]
 
@@ -199,7 +203,7 @@
   [:div.pt-koika
    [:img.a.x4.blood   {:src "./img/blood.png"}]
    [:img.a.x3.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
-                  :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
+                       :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
    [:img.a.x4.koika   {:src "./img/koika.png"}]
    [:img.a.x4.tumba   {:src "./img/tumba.png"}]
    [:img.a.x4.wall    {:src "./img/wall.png"}]
@@ -207,65 +211,56 @@
 
 (defn koika-3 [patient]
   [:div.pt-koika
-   #_[:img.x5.wall    {:src "./img/wall.png"}]
+   #_[:img.a.x4.wall    {:src "./img/wall.png"}]
    [:img.a.x3.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
-                  :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
-   [:img.a.x4.koika   {:src "./img/koika.png"}]
-   #_[:img.x5.tumba   {:src "./img/tumba.png"}]])
+                       :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
+   [:img.a.x4.koika   {:src "./img/koika.png"}]])
 
-(defn koika [idx patient]
-  (let [k (case idx
-            0 koika-1
-            1 koika-2
-            koika-3)]
-    [k patient]))
+(defn koika [idx patient] (let [k (case idx 0 koika-1 1 koika-2 koika-3)] [k patient]))
 
 (pages/reg-subs-page
  model/index-page
- (fn [_ _]
-   (let [drag-box-state (rf/subscribe [:dnd/drag-box])]
-     (fn [{dv :d pts :pts medics :aidbox obs :obs ap :ap :as  page} _]
-       [:div.game.rpgui-container.framed.relative.rpgui-cursor-grab-open
-        (when @drag-box-state [dndv/drag-box])
+ (fn [{dv :d pts :pts medics :aidbox obs :obs ap :ap :as  page} _]
+   [:div.rpgui-container.framed.relative
 
-        [:div.top-left-bordur] [:div.top-bordur] [:div.top-right-bordur]
-        [:div.bottom-left-bordur] [:div.bottom-bordur] [:div.bottom-right-bordur]
-        [:div.left-bordur] [:div.right-bordur]
+    [:div.fsgrid
+     [:div#g-patients {:style {:margin-right "15px" :margin-bottom "20px"}}
+      [:div.relative.game {:style { :margin-bottom "20px"}}
+       [:div.top-left-bordur] [:div.top-bordur] [:div.top-right-bordur]
+       [:div.bottom-left-bordur] [:div.bottom-bordur] [:div.bottom-right-bordur]
+       [:div.left-bordur] [:div.right-bordur]
+       [:div.top-wall] [:div.top-door] [:div.logo]
+       ;; [:div.left-racovina] [:div.lab] [:div.wall-blood]
 
-        [:div.top-wall]
-        [:div.top-door]
+       [:div.flex.around {:style {:padding-top "220px"}}
+        (for [[idx [k v]] (map-indexed vector pts)]
+          [:div {:key idx :class (when (get-in v [:deceased :boolean]) "dsbl")}
+           [koika idx v]])]]
 
-        ;; [:div.left-racovina]
-        ;; [:div.lab]
-        ;;[:div.wall-blood]
-        [:div.logo]
 
-        [:div.fsgrid
-         [:div#g-patients
-          [:div.flex.around
-           (into [:<>]
-                 (for [[idx [k v]] (map-indexed vector pts)] ^{:key k}
-                   [:div {:class (when (get-in v [:deceased :boolean]) "dsbl")}
-                     [drag-golden v (get obs k)]
-                     [koika idx v]]))]]
 
-         [:div#g-aidbox
-          [aidbox medics ap]]
+      [:div.flex.around
+       (for [[idx [k v]] (map-indexed vector pts)] ^{:key idx}
+         [:div {:class (when (get-in v [:deceased :boolean]) "dsbl")}
+          [drag-golden v (get obs k)]])]]
 
-         [:div#g-progress
-          [:div.flex.ac
-           [:div.grow-1.mr-3
-            [:div
-             [:div.rpgui-progress.blue {:data-rpguitype "progress"}
-              [:div.rpgui-progress-track
-               [:div.rpgui-progress-fill.blue
-                {:style {:width (str (/ (* 100 (or (:game-step page) 1) ) 10) "%")}}]]
-              [:div.rpgui-progress-left-edge]
-              [:div.rpgui-progress-right-edge]]]]
+     [:div#g-aidbox
+      [aidbox medics ap]]
 
-           [:button.rpgui-button.golden
-            {:style {:padding-top "0px" :width "370px"}
-             :on-click #(rf/dispatch [::model/next-step])}
-            (if (= 10 (:game-step page))
-              [:p {:style {:padding-top "5px"}} "Конец " (:game-step page) "/10"]
-              [:p {:style {:padding-top "5px"}} "Следующий день " (:game-step page) "/10"])]]]]]))))
+     [:div#g-progress
+      [:div.flex.ac
+       [:div.grow-1.mr-3
+        [:div
+         [:div.rpgui-progress.blue {:data-rpguitype "progress"}
+          [:div.rpgui-progress-track
+           [:div.rpgui-progress-fill.blue
+            {:style {:width (str (/ (* 100 (or (:game-step page) 1) ) 10) "%")}}]]
+          [:div.rpgui-progress-left-edge]
+          [:div.rpgui-progress-right-edge]]]]
+
+       [:button.rpgui-button.golden
+        {:style {:padding-top "0px" :width "370px"}
+         :on-click #(rf/dispatch [::model/next-step])}
+        (if (= 10 (:game-step page))
+          [:p {:style {:padding-top "5px"}} "Конец " (:game-step page) "/10"]
+          [:p {:style {:padding-top "5px"}} "Следующий день " (:game-step page) "/10"])]]]]]))
