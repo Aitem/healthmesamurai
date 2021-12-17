@@ -205,14 +205,14 @@
    [:img.a.x3.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
                        :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
    [:img.a.x4.koika   {:src "./img/koika.png"}]
-   [:img.a.x4.tumba   {:src "./img/tumba.png"}]
+   [:img.a.x4.tumba   {:src "./img/tumba-cvet.png"}]
    [:img.a.x4.wall    {:src "./img/wall.png"}]
    ])
 
 (defn koika-3 [patient]
   [:div.pt-koika
    [:img.a.x4.stul   {:src "./img/blood-taburet.png"}]
-   [:img.a.x4.tumba   {:src "./img/tumba.png"}]
+   ;;[:img.a.x4.tumba   {:src "./img/tumba.png"}]
    [:img.a.x3.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
                        :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
    [:img.a.x4.koika   {:src "./img/koika.png"}]])
@@ -232,9 +232,13 @@
        [:div.left-bordur] [:div.right-bordur]
        [:div.top-wall] [:div.top-door] [:div.logo]
        [:img.a.x4.lab      {:src "./img/lab.png"}]
-       [:img.a.x4.divan    {:src "./img/divan.png"}]
+       ;;[:img.a.x3.ray      {:src "./img/ray.png"}]
+       [:img.a.x4.prep-stool    {:src "./img/prep-stool.png"}]
        [:img.a.x4.aaidbox  {:src "./img/aidbox.png"}]
        [:img.a.x4.clock    {:src "./img/clock.png"}]
+       [:img.a.x4.rupor    {:src "./img/rupor.png"}]
+       [:img.a.x4.stol1    {:src "./img/stol1.png"}]
+       ;; [:img.a.x4.bb1    {:src "./img/bb1.png"}]
 
        ;; [:div.left-racovina] [:div.lab] [:div.wall-blood]
 
