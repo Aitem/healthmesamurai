@@ -173,5 +173,5 @@
       [:div.rpgui-center
        [:button.rpgui-button.rpgui-cursor-default
         {:on-click #(rf/dispatch [::restart])}
-        "Сыграть снова"]]
+        [:p "Сыграть снова"]]]
       [:br]])))

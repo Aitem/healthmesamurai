@@ -78,6 +78,7 @@
            (inc idx)))))))
 
 (defn stat-builder [patient stat]
+
   {:request {:method "post" :url "/Observation"}
    :resource {:subject {:id (:id patient) :resourceType "Patient"}
               :status "final"
