@@ -35,16 +35,14 @@
         money-left               (score-calculator :balance alive)
         patient-health-left      (score-calculator :health alive)
         dead-patients-money-left (score-calculator :balance dead)
-        score                    (+ money-left patient-health-left)
-        total-score              (- (* score score-multiplicator)
-                                    dead-patients-money-left)]
+        total-score              (- (* (+ money-left patient-health-left) patients-alive)
+                                    (* dead-patients-money-left patients-died))]
     {:patients-alive           patients-alive
      :patients-died            patients-died
      :score-multiplicator      score-multiplicator
      :money-left               money-left
      :patient-health-left      patient-health-left
      :total-score              total-score
-     :score                    score
      :dead-patients-money-left dead-patients-money-left}))
 
 
@@ -141,10 +139,10 @@
       [:div {:style {:display :flex :justify-content :center}}
        [:div {:style {:text-align "center"}}
         [:h1 {:style {:font-size "210%"}} "Финальный счет: " (:total-score stats)]
-        [:p (str "("
-                 (:patient-health-left stats)
-                 " + " (:money-left stats)
-                 ") * " (:score-multiplicator stats) " - " (:dead-patients-money-left stats)
+        #_(- (* (+ money-left patient-health-left) patients-alive)
+           (* dead-patients-money-left patients-died))
+        [:p (str "(" (:money-left stats) " + " (:patient-health-left stats) ") * " (:score-multiplicator stats)
+                 " - " (:dead-patients-money-left stats) " * "(:dead-patients-money-left stats)
                  " = " (:total-score stats))]]]
       [:hr]
       (let [scoreboard @(rf/subscribe [::scoreboard])]
