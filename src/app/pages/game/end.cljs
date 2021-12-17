@@ -123,8 +123,8 @@
                              :border "none"}}
        [:tbody
         [:tr
-         [:td.score-td.score-right-td [:p "Выжило пациентов: "]]
-         [:td.score-td.score-left-td [:p (:patients-alive stats)]]
+         [:td.score-td.score-right-td [:p "Выжило/умерло пациентов: "]]
+         [:td.score-td.score-left-td [:p (str (:patients-alive stats) "/" (:patients-died stats))]]
          [:td.score-td.score-right-td [:p "Денег осталось: "]]
          [:td.score-td.score-left-td [:p (:money-left     stats)]]]
         [:tr
@@ -145,7 +145,7 @@
         [:div
          [:div.rpgui-container.framed-golden.pos-initial
           {:style {:overflow-y "scroll"
-                   :height "400px"}}
+                   :height "350px"}}
           [:table.score {:style {:border "none"}}
            [:thead {:style {:font-size "16px"}} [:tr [:th [:h1 "#"]] [:th [:h1 "Имя"]] [:th [:h1 "Счёт"]]]]
            [:tbody
@@ -174,4 +174,8 @@
        [:button.rpgui-button.rpgui-cursor-default
         {:on-click #(rf/dispatch [::restart])}
         [:p "Сыграть снова"]]]
+      [:div {:style {:display :flex :justify-content :center}}
+       [:div {:style {:text-align "center"}}
+        [:p [:a {:href "https://healthmesamurai.edge.aidbox.app/ui/console#/notebooks/13d4bcc9-dd01-49d5-8b61-8ae32852dd36"
+                 :target "blank"} "Used FHIR resources on aidbox.app"]]]]
       [:br]])))
