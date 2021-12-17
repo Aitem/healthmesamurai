@@ -4,6 +4,11 @@ body, #root
     padding-top:20px;
     padding-bottom:20px;
 }
+#app {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
 .pt-icn {
     width: 22px;
     margin-right: 10px;
@@ -30,6 +35,8 @@ body, #root
 
 #app .relative {
     position: relative;
+    max-width: 1400px;
+    margin: 0 auto;
 }
 
 .pos-initial {
@@ -110,7 +117,7 @@ body, #root
     left: 164px; top: 63px;
 }
 .pt-koika .stul {
-    left: 14px; top: 63px;
+    left: 14px; top: 100px;
 }
 
 
@@ -358,7 +365,8 @@ body, #root
     min-width: 740px;
     max-width: 97%;
     margin: 0 auto;
-    height: calc(100vh - 430px);
+    /* height: calc(100vh - 430px); */
+    height: 500px;
 }
 
 .tab {
@@ -505,7 +513,8 @@ body, #root
 
 .aidbox {
     overflow: scroll;
-    height: calc(100vh - 315px);
+    /* height: calc(100vh - 315px); */
+    height: 607px;
 }
 
 .hoverable:hover {
