@@ -153,7 +153,8 @@
                 [:img  {:width "20px" :src "./dist/img/radio-on.png"}]))
         (into [:<>]
               (for [a (repeat (- total current) "x")]
-                [:img  {:width "20px" :src "./dist/img/radio-off.png"}]))
+                [:img {:style {:filter "grayscale(100%)"}
+                       :width "20px" :src "./dist/img/radio-on.png"}]))
 
         (into [:<>]
               (for [a (repeat (- 10 total) "x")]
