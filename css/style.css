@@ -8,6 +8,12 @@ body, #root
     width: 22px;
     margin-right: 10px;
 }
+.pt-icn.stat-icon{
+    width: 25px;
+    margin-right: 25px;
+    margin-left: 8px;
+}
+
 .pt-monitor {
     width: 50px;
     margin-right: 10px;
@@ -16,8 +22,8 @@ body, #root
     margin-top: 10px;
 }
 #app .pt {
-    margin-right: 10px;
     width: 280px;
+    margin-bottom: 50px;
 }
 #app .p-8 {
     padding: 8px;
@@ -273,7 +279,8 @@ body, #root
     /* border: 10px solid blue; */
     box-shadow: 0px 0px 25px 14px rgba(249, 224, 31, 0.81);
     width: 280px;
-    height: 240px;
+    height: 230px;
+    border-radius: 10px;
     position: absolute;
     z-index: 100;
 }
@@ -303,10 +310,11 @@ body, #root
 
     width: 20px;
     height: 15px;
-    background-color: gray;
+    background-color: #4e4a4e;
     border: 1px solid gray;
-    margin-right: 2px;
+    margin-right: 5px;
     border-radius: 2px;
+    margin-top: 2px;
 }
 
 
