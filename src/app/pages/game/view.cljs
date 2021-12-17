@@ -135,8 +135,6 @@
         pt (rf/subscribe [::model/selected-pt])]
     (fn [med {:keys [total current]:as ap}]
       [:div.rpgui-container.framed-golden.pos-initial
-
-
        [:div.aidbox
         (let [mmeds (reduce-kv
                      (fn [acc k v]
@@ -158,16 +156,26 @@
              (for [[id res] mmeds]  ^{:key id}
                [drug id res]))))]
        [:div.tab
-        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :temperature)
-                                         :src "./img/thermometer.png" :class (when (= :temperature (:selected @state)) "active")}]
-        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :pressure)
-                                         :src "./img/tonometer.png"   :class (when (= :pressure    (:selected @state)) "active")}]
-        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :sugar)
-                                         :src "./img/sugar.png"       :class (when (= :sugar       (:selected @state)) "active")}]
-        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :bacteria)
-                                         :src "./img/bacteria.png"   :class (when (= :bacteria    (:selected @state)) "active")}]
-        [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :diarrhea)
-                                         :src "./img/diarrhea.png"    :class (when (= :diarrhea    (:selected @state)) "active")}]]
+        [:img.pt-icn.rpgui-cursor-point.img-img-img {:on-click #(set-fltr :temperature)
+                                                     :title "Температура"
+                                                     :src "./img/thermometer.png"
+                                                     :class (when (= :temperature (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point.img-img-img {:on-click #(set-fltr :pressure)
+                                                     :title "Кровяное давление"
+                                                     :src "./img/tonometer.png"
+                                                     :class (when (= :pressure    (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point.img-img-img {:on-click #(set-fltr :sugar)
+                                                     :title "Уровень сахара в крови"
+                                                     :src "./img/sugar.png"
+                                                     :class (when (= :sugar       (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point.img-img-img {:on-click #(set-fltr :bacteria)
+                                                     :title "Бактерии"
+                                                     :src "./img/bacteria.png"
+                                                     :class (when (= :bacteria    (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point.img-img-img {:on-click #(set-fltr :diarrhea)
+                                                     :title "Расстройства ЖКТ"
+                                                     :src "./img/diarrhea.png"
+                                                     :class (when (= :diarrhea    (:selected @state)) "active")}]]
 
        [:hr]
        [:div.apps

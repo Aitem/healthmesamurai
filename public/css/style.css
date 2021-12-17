@@ -387,12 +387,16 @@ body, #root
 }
 
 .tab .pt-icn.active {
-    background-color: gray;
+    background-color: lightgray;
 }
+
+.img-img-img {
+    border-radius: .5em;
+    border: solid 0.08em #eee;}
 
 .fsgrid {
     display: grid;
-     height: calc(100% - 40px);
+    height: calc(100% - 40px);
     grid-template-columns: 1fr 375px;
     grid-template-rows: 1fr 70px;
     gap: 0px 0px;
