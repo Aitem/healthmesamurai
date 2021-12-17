@@ -157,7 +157,13 @@ body, #root
     height: 20px;
     background-size: 5px;
     background-image: url(./../img/top-bordur.png);
+    position: absolute;
+    z-index: 3;
+    width: 100%;
+    top: 0;
+    left: 0;
 }
+
 .top-left-bordur {
     width: 20px;
     height: 20px;
@@ -171,7 +177,7 @@ body, #root
     height: 120px;
     background-size: 19px;
     position: absolute;
-    top: 0;
+    top: 18px;
     left: 0;
     z-index: -1;
 }
