@@ -19,7 +19,6 @@
       [:p "Чтобы выжить, надо продержаться 10 дней, после этого зараза отступает и появляется полный иммунитет."]
       [:p "В этой игре - Вы врач, у Вас три пациента и аптечка лекарств. Выбирайте лекарства и лечите больных пока у них не кончатся деньги или не закончатся очки хода."]
       [:hr]
-      [:br]
 
       [:span
        [:span [:img.pt-icn {:src "./img/thermometer.png"}] "Температура"]
@@ -28,9 +27,13 @@
        [:span " | "]
        [:span [:img.pt-icn {:src "./img/sugar.png"}] "Сахар"]
        [:span " | "]
-       [:span [:img.pt-icn {:src "./img/bacteria.png"}] "Инфекция"]
+       [:span [:img.pt-icn {:src "./img/bacteria.png"}] "Бактерии"]
        [:span " | "]
        [:span [:img.pt-icn {:src "./img/diarrhea.png"}] "ЖКТ"]]
+
+      [:hr]
+      [:br]
+
 
       [:div.rpgui-center
        [:div {:style {:width "300px" :margin "0 auto"}}
