@@ -484,3 +484,7 @@ body, #root
     overflow: scroll;
     height: calc(100vh - 370px);
 }
+
+.hoverable:hover {
+    box-shadow: 4px 4px 4px 4px rgba(210, 125, 44, 1);
+}
