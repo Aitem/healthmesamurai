@@ -299,7 +299,8 @@ body, #root
 
 .fsgrid {
     display: grid;
-    height: 100%;
+     height: calc(100% - 40px);
+    padding: 20px;
     grid-template-columns: 1fr 375px;
     grid-template-rows: 1fr 70px;
     gap: 0px 0px;
@@ -421,5 +422,5 @@ body, #root
 
 .aidbox {
     overflow: scroll;
-    height: calc(100vh - 330px);
+    height: calc(100vh - 370px);
 }
