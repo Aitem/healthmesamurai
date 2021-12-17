@@ -79,31 +79,21 @@
          (:balance pt)]]]]
      [:div.pt-stats
       (let [m (get-in (get o "temperature") [0 :value :Quantity :value])]
-        [:div.flex.stat-row
-         [:img.pt-icn {:src "./img/thermometer.png"}]
-         [stat-widget m]])
+        [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/thermometer.png"}] [stat-widget m]])
 
       (let [m (get-in (get o "pressure")    [0 :value :Quantity :value])]
-        [:div.flex.stat-row
-         [:img.pt-icn {:src "./img/tonometer.png"}]
-         [stat-widget m]])
+        [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/tonometer.png"}] [stat-widget m]])
 
 
       (let [m (get-in (get o "sugar")    [0 :value :Quantity :value])]
-        [:div.flex.stat-row
-         [:img.pt-icn {:src "./img/sugar.png"}]
-         [stat-widget m]])
+        [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/sugar.png"}] [stat-widget m]])
 
 
       (let [m (get-in (get o "bacteria")    [0 :value :Quantity :value])]
-        [:div.flex.stat-row
-         [:img.pt-icn {:src "./img/bacteria.png"}]
-         [stat-widget m]])
+        [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/bacteria.png"}] [stat-widget m]])
 
       (let [m (get-in (get o "diarrhea")    [0 :value :Quantity :value])]
-        [:div.flex.stat-row
-         [:img.pt-icn {:src "./img/diarrhea.png"}]
-         [stat-widget m]])
+        [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/diarrhea.png"}] [stat-widget m]])
 
       ]]))
 
@@ -206,20 +196,16 @@
   [:div
    [:img.blood   {:src "./img/blood.png"}]
    [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
-                  :class (if (get-in patient [:deceased :boolean])
-                           "deceased"
-                           "alive")}]
+                  :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
    [:img.koika   {:src "./img/koika.png"}]
    [:img.tumba   {:src "./img/tumba.png"}]
    ;;[:img.wall    {:src "./img/wall.png"}]
    ])
 
 (defn koika-3 [patient]
-  [:div
+  [:div {:style {:margin-top "92px"}}
    [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
-                  :class (if (get-in patient [:deceased :boolean])
-                           "deceased"
-                           "alive")}]
+                  :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
    [:img.koika   {:src "./img/koika.png"}]
    [:img.tumba   {:src "./img/tumba.png"}]
    ])
@@ -245,7 +231,7 @@
            (into [:<>]
                  (for [[idx [k v]] (map-indexed vector pts)] ^{:key k}
                    [dndv/drop-zone (keyword k)
-                    [:div
+                    [:div {:class (when (get-in v [:deceased :boolean]) "dsbl")}
                      [drag-golden v (get obs k)]
                      [koika idx v]]]))]]
 
