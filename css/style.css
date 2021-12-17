@@ -109,6 +109,10 @@ body, #root
 .pt-koika .tumba {
     left: 164px; top: 63px;
 }
+.pt-koika .stul {
+    left: 14px; top: 63px;
+}
+
 
 .pt-koika .wall {
     right: 20px; top: 80px;
@@ -285,7 +289,7 @@ body, #root
     background-repeat: no-repeat;
     position: absolute;
     top: 23px;
-    left: 50%;
+    left: 320px;
     z-index: 1;
 
 }
@@ -301,25 +305,18 @@ body, #root
     left: 10px;
     z-index: 1;
 }
-.lab {
-    background-image: url(./../img/lab.png);
-    width: 201px;
-    height: 508px;
-    background-size: 174px;
-    background-repeat: no-repeat;
-    position: absolute;
-    top: 76px;
-    left: 13%;
-    z-index: 1;
-}
+.lab     {top: 107px; left: 590px; z-index: 1;}
+.divan   {bottom: 167px; left: 44px; z-index: 1;}
+.aaidbox {top: 65px; left: 270px; z-index: 1;}
+.clock   {top: 48px; left: 200px; z-index: 1;}
 .logo {
     background-image: url(./../img/logo.png);
     width: 308px;
     height: 508px;
     background-repeat: no-repeat;
     position: absolute;
-    top: 50px;
-    left: 11%;
+    top: 28px;
+    left: 480px;
     z-index: 1;
 }
 
