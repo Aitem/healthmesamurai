@@ -117,7 +117,11 @@
       {:style {:height "calc(100vh - 35px)"}}
       [:h1 {:style {:font-size "250%"}} "Игра окончена!"]
       [:hr.golden]
-
+      [:div {:style {:display :flex :justify-content :center}}
+       [:div {:style {:text-align "center"}}
+        [:p [:a {:href "https://healthmesamurai.edge.aidbox.app/ui/console#/notebooks/13d4bcc9-dd01-49d5-8b61-8ae32852dd36"
+                 :target "blank"} "Used FHIR resources on aidbox.app"]]]]
+      [:hr]
       [:table {:style {:width "100%"
                              :table-layout :fixed
                              :border "none"}}
@@ -174,8 +178,4 @@
        [:button.rpgui-button.rpgui-cursor-default
         {:on-click #(rf/dispatch [::restart])}
         [:p "Сыграть снова"]]]
-      [:div {:style {:display :flex :justify-content :center}}
-       [:div {:style {:text-align "center"}}
-        [:p [:a {:href "https://healthmesamurai.edge.aidbox.app/ui/console#/notebooks/13d4bcc9-dd01-49d5-8b61-8ae32852dd36"
-                 :target "blank"} "Used FHIR resources on aidbox.app"]]]]
       [:br]])))
