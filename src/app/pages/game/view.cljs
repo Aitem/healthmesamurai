@@ -108,7 +108,10 @@
      [:h3 (:name m)]
      [:div.flex
       [:div.rpgui-icon.empty-slot.tabl-ico
-       [:img.med-img {:src (:image m)}]]
+       [:img.med-img {:src (:image m)
+                      :style {:padding-top "5px"
+                              }
+                      }]]
       [:div.grow-1
        [:div.grid-grug
         [:div {:style {:margin-bottom "5px"}}
