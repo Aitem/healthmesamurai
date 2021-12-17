@@ -530,8 +530,10 @@ body, #root
 
 .aidbox {
     overflow: scroll;
+    overflow-x: hidden;
+    margin-bottom: 10px;
     /* height: calc(100vh - 315px); */
-    height: 607px;
+    height: 597px;
 }
 
 .hoverable:hover {
