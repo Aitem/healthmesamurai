@@ -29,7 +29,6 @@
                                          (if (get-in p [:deceased :boolean])
                                            :dead
                                            :alive)) patients)
-        score-multiplicator      (max 1 (count alive))
         patients-alive           (count alive)
         patients-died            (count dead)
         money-left               (score-calculator :balance alive)
@@ -39,7 +38,6 @@
                                     (* dead-patients-money-left patients-died))]
     {:patients-alive           patients-alive
      :patients-died            patients-died
-     :score-multiplicator      score-multiplicator
      :money-left               money-left
      :patient-health-left      patient-health-left
      :total-score              total-score
@@ -139,10 +137,8 @@
       [:div {:style {:display :flex :justify-content :center}}
        [:div {:style {:text-align "center"}}
         [:h1 {:style {:font-size "210%"}} "Финальный счет: " (:total-score stats)]
-        #_(- (* (+ money-left patient-health-left) patients-alive)
-           (* dead-patients-money-left patients-died))
-        [:p (str "(" (:money-left stats) " + " (:patient-health-left stats) ") * " (:score-multiplicator stats)
-                 " - " (:dead-patients-money-left stats) " * "(:dead-patients-money-left stats)
+        [:p (str "(" (:money-left stats) " + " (:patient-health-left stats) ") * " (:patients-alive stats)
+                 " - " (:dead-patients-money-left stats) " * "(:patients-died stats)
                  " = " (:total-score stats))]]]
       [:hr]
       (let [scoreboard @(rf/subscribe [::scoreboard])]
