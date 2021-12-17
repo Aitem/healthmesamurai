@@ -211,7 +211,7 @@
 
 (defn koika-3 [patient]
   [:div.pt-koika
-   [:img.a.x4.stul   {:src "./img/stul.png"}]
+   [:img.a.x4.stul   {:src "./img/blood-taburet.png"}]
    [:img.a.x4.tumba   {:src "./img/tumba.png"}]
    [:img.a.x3.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
                        :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
