@@ -236,6 +236,7 @@
         [:div.top-door]
 
         [:div.left-racovina]
+        [:div.lab]
 
         [:div.fsgrid
          [:div#g-patients
@@ -262,6 +263,6 @@
               [:div.rpgui-progress-right-edge]]]]
 
            [:button.rpgui-button.golden
-            {:style {:padding-top "0px"}
+            {:style {:padding-top "0px" :width "370px"}
              :on-click #(rf/dispatch [::model/next-step])}
             [:p {:style {:padding-top "5px"}} "Далее " (:game-step page) "/10"]]]]]]))))

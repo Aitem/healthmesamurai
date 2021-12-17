@@ -272,7 +272,6 @@ body, #root
 }
 
 .left-racovina {
-
     background-image: url(./../img/racovina.png);
     width: 143px;
     height: 500px;
@@ -282,8 +281,19 @@ body, #root
     top: 6%;
     left: 10px;
     z-index: -1;
-
 }
+.lab {
+    background-image: url(./../img/lab.png);
+    width: 201px;
+    height: 508px;
+    background-size: 174px;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 76px;
+    left: 13%;
+    z-index: -1;
+}
+
 
 
 

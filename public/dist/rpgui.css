@@ -136,7 +136,7 @@ inside your html file.
   left: 0px;
   float: left;
   margin-left: -46px;
-  margin-top: -5%; }
+  margin-top: -5px; }
 
 .rpgui-button.golden:after {
   white-space: nowrap;
@@ -150,7 +150,7 @@ inside your html file.
   right: 0px;
   float: right;
   margin-right: -46px;
-  margin-top: -5%; }
+  margin-top: -5px; }
 
 /*
 .rpgui-button.golden:hover:before {
