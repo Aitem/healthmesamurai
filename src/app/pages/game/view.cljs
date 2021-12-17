@@ -44,6 +44,15 @@
       2  "red"
       "red")))
 
+
+(defn stat-widget [s]
+  [:div.stat-widget.flex
+   [:div.stat-widget-itm {:class (when (= -2 s) "red" )} ]
+   [:div.stat-widget-itm {:class (case s -2 "red" -1 "yellow" "")}  ]
+   [:div.stat-widget-itm {:class (case s -2 "red" -1 "yellow" -0 "green" 1 "yellow" 2 "red"  "")}  ]
+   [:div.stat-widget-itm {:class (case s  2 "red"  1 "yellow" "")}  ]
+   [:div.stat-widget-itm {:class (when (= 2 s) "red" )}  ]])
+
 (defn drag-golden [pt obs]
   (let [o (group-by #(get-in % [:code :coding 0 :code]) obs)
         death? (get-in pt [:deceased :boolean])
@@ -68,15 +77,33 @@
          (:balance pt)]]]]
      [:div.pt-stats
       (let [m (get-in (get o "temperature") [0 :value :Quantity :value])]
-        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/thermometer.png"}]   m " temperature"]])
+        [:div.flex.stat-row
+         [:img.pt-icn {:src "./img/thermometer.png"}]
+         [stat-widget m]])
+
       (let [m (get-in (get o "pressure")    [0 :value :Quantity :value])]
-        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/tonometer.png"}]     m " pressure"]])
-      (let [m (get-in (get o "sugar")       [0 :value :Quantity :value])]
-        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/sugar.png"}]         m " sugar"]])
+        [:div.flex.stat-row
+         [:img.pt-icn {:src "./img/tonometer.png"}]
+         [stat-widget m]])
+
+
+      (let [m (get-in (get o "sugar")    [0 :value :Quantity :value])]
+        [:div.flex.stat-row
+         [:img.pt-icn {:src "./img/sugar.png"}]
+         [stat-widget m]])
+
+
       (let [m (get-in (get o "bacteria")    [0 :value :Quantity :value])]
-        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/bacteria.png"}]     m " bacteria"]])
+        [:div.flex.stat-row
+         [:img.pt-icn {:src "./img/bacteria.png"}]
+         [stat-widget m]])
+
       (let [m (get-in (get o "diarrhea")    [0 :value :Quantity :value])]
-        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/diarrhea.png"}]      m " diarrhea"]])]]))
+        [:div.flex.stat-row
+         [:img.pt-icn {:src "./img/diarrhea.png"}]
+         [stat-widget m]])
+
+      ]]))
 
 (defn plusify [t] (if (> t 0 ) (str "+" t) t))
 
