@@ -23,7 +23,6 @@ body, #root
 }
 #app .pt {
     width: 280px;
-    margin-bottom: 50px;
 }
 #app .p-8 {
     padding: 8px;
@@ -150,12 +149,8 @@ body, #root
     margin-top: -90px;
     margin-left: 60px;
 }
-.patient {
-    position: relative;
-    margin-right: -118px;
-    margin-bottom: 80px;
-}
-.patient.deceased {
+
+.patient .patient.deceased {
     -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
     filter: grayscale(100%);
 }
@@ -271,7 +266,7 @@ body, #root
     position: absolute;
     top: 18px;
     left: 0;
-    z-index: -1;
+    z-index: 1;
 }
 
 .top-door {
@@ -283,8 +278,8 @@ body, #root
     background-repeat: no-repeat;
     position: absolute;
     top: 23px;
-    left: 40%;
-    z-index: -1;
+    left: 50%;
+    z-index: 1;
 
 }
 
@@ -297,7 +292,7 @@ body, #root
     position: absolute;
     top: 6%;
     left: 10px;
-    z-index: -1;
+    z-index: 1;
 }
 .lab {
     background-image: url(./../img/lab.png);
@@ -308,7 +303,7 @@ body, #root
     position: absolute;
     top: 76px;
     left: 13%;
-    z-index: -1;
+    z-index: 1;
 }
 .logo {
     background-image: url(./../img/logo.png);
@@ -318,7 +313,7 @@ body, #root
     position: absolute;
     top: 50px;
     left: 11%;
-    z-index: -1;
+    z-index: 1;
 }
 
 
@@ -330,7 +325,7 @@ body, #root
     position: absolute;
     top: 58px;
     left: 25%;
-    z-index: -1;
+    z-index: 1;
     opacity: 0.9;
 }
 
@@ -359,7 +354,7 @@ body, #root
     min-width: 740px;
     max-width: 97%;
     margin: 0 auto;
-    height: calc(100vh - 35px);
+    height: calc(100vh - 506px);
 }
 
 .tab {
@@ -380,7 +375,6 @@ body, #root
 .fsgrid {
     display: grid;
      height: calc(100% - 40px);
-    padding: 20px;
     grid-template-columns: 1fr 375px;
     grid-template-rows: 1fr 70px;
     gap: 0px 0px;
@@ -391,8 +385,7 @@ body, #root
         ". . .";
 }
 
-#g-patients { grid-area: patients;
-              padding-top: 120px;}
+#g-patients { grid-area: patients;}
 
 #g-aidbox { grid-area: aidbox; }
 
@@ -508,7 +501,7 @@ body, #root
 
 .aidbox {
     overflow: scroll;
-    height: calc(100vh - 370px);
+    height: calc(100vh - 400px);
 }
 
 .hoverable:hover {
