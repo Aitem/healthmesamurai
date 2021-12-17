@@ -31,7 +31,6 @@
        (reduce (fn [acc pt] (assoc acc (:id pt) pt)) {})
        (into (sorted-map))))
 
-(def drag-zone-cfg {:drop-dispatch [:my-drop-dispatch] :drop-marker :my-drop-marker})
 
 
 (rf/reg-event-db
@@ -54,10 +53,8 @@
 (rf/reg-event-fx
  ::save-patients
  (fn [{db :db} [_ resp]]
-   (let [pts (patients-map resp)
-         init-droppable (map  (fn [[k v]] [:dnd/initialize-drop-zone (keyword k) drag-zone-cfg]) pts)]
-     {:dispatch-n  init-droppable
-      :db (assoc db :patients pts)
+   (let [pts (patients-map resp)]
+     {:db (assoc db :patients pts)
       :json/fetch {:uri "/Observation"
                    :params {:subject (str/join "," (keys pts))}
                    :success {:event ::save-obs}}})))
@@ -116,6 +113,8 @@
 
          {:db (-> db
                   (assoc-in  [:patients (:id pt)] patient)
+                  (assoc-in  [:selected-pt :pt] patient)
+                  (assoc-in  [:selected-pt :obs] new-obs)
                   (update-in [:ap :current] - (:action-point drug))
                   (assoc-in  [:observations (:id pt)] new-obs))
 
@@ -170,6 +169,17 @@
                                    :resource r})
                                 resources)}
                  :success {:event ::save-init-data}}}))
+
+(rf/reg-event-db
+ ::select-pt
+ (fn [db [_ pt obs]]
+   (assoc db :selected-pt {:pt pt :obs obs})))
+
+(rf/reg-sub ::selected-pt (fn [db _] (:selected-pt db)))
+
+(rf/reg-event-db ::select-drug (fn [db [_ pt]] (assoc db :selected-drug pt)))
+(rf/reg-sub ::selected-drug (fn [db _] (:selected-drug db)))
+
 
 (rf/reg-event-fx
  ::next-step

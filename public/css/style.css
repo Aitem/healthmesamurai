@@ -469,6 +469,11 @@ body, #root
     background-color: yellow;
     color: yellow;
 }
+.stat-row .blue {
+    background-color: #1195e8;
+    color: yellow;
+}
+
 
 .stat-row .green {
     background-color: lightgreen;

@@ -15,122 +15,118 @@
   [{:keys [type id]}]
   #_[:span.my-drop-marker ])
 
-(def last-id (r/atom 0)) ;;or use ie. (str (random-uuid))
-
-(rf/reg-event-fx
- :my-drop-dispatch
- (fn [{db :db}
-      [_
-       [source-drop-zone-id drug-id]
-       [drop-zone-id dropped-element-id dropped-position]]]
-   ;;position = index in the list of dropped elements
-   (prn "=================" "zone" drop-zone-id  "element" drug-id)
-   (let [drug (get-in db [:aidbox (name drug-id)])
-         pocik (get-in db [:patients (name drop-zone-id)])]
-       (swap! last-id inc)
-       (prn "Apply drug:" drug)
-       (prn "For pocik :" pocik)
-     {:db       db
-      :dispatch  [::model/apply-drug pocik drug]})))
-
-(defn stat-color [m d]
-  (if d
-    "red"
-    (case m
-      -2 "red"
-      -1 "yellow"
-      0  "green"
-      1  "yellow"
-      2  "red"
-      "red")))
-
-
-(defn stat-widget [s]
+(defn stat-widget [s & [b]]
   [:div.stat-widget.flex
    [:span {:style {:margin-right "4px"}} "-"]
-   [:div.stat-widget-itm {:class (when (= -2 s) "red" )} ]
-   [:div.stat-widget-itm {:class (case s -2 "red" -1 "yellow" "")}  ]
-   [:div.stat-widget-itm {:class (case s -2 "red" -1 "yellow" -0 "green" 1 "yellow" 2 "red"  "")}  ]
-   [:div.stat-widget-itm {:class (case s  2 "red"  1 "yellow" "")}  ]
-   [:div.stat-widget-itm {:class (when (= 2 s) "red" )}  ]
+   [:div.stat-widget-itm {:class (when (= -2 s) (if b "blue" "red") )} ]
+   [:div.stat-widget-itm {:class (case s -2 (if  b "blue" "red") -1 (if  b "blue" "yellow") "")}  ]
+   [:div.stat-widget-itm {:class (case s -2 (if  b "blue" "red") -1 (if  b "blue" "yellow") -0 (if  b "blue" "green") 1 (if  b "blue" "yellow") 2 (if  b "blue" "red")  "")}  ]
+   [:div.stat-widget-itm {:class (case s  2 (if  b "blue" "red")  1 (if  b "blue" "yellow") "")}  ]
+   [:div.stat-widget-itm {:class (when (= 2 s) (if  b "blue" "red") )}  ]
    [:span {:style {:margin-left "4px"}} "+"]])
 
-(defn drag-golden [pt obs]
-  (let [o (group-by #(get-in % [:code :coding 0 :code]) obs)
-        death? (get-in pt [:deceased :boolean])
-        d death?]
-    [:div.rpgui-container.pos-initial.drag.p-8.pt
-     {:class (if death? "framed" "framed-golden")}
-     [:div.flex.pt-10
-      [:img.pt-monitor (if death?
-                         {:src "./img/flatline.gif"}
-                         {:src "./img/heartbeat.gif"})]
-      [:div
-       [:h3 {:style {:margin "0", :margin-bottom "5px"}} (get-in pt [:name 0 :given 0])]
-       [:span
-        [:span.pt-hp
-         (for [i (range (:health pt))] ^{:key i}
-           [:img.pt-icn {:src "./img/heart.png"}])
-         (for [i (range (- 3 (:health pt)))] ^{:key i}
-           [:img.pt-icn {:src "./img/heart_black.png"}])
-         #_[:img.pt-icn {:src "./img/heart.png"}]
-         #_[:img.pt-icn {:src "./img/heart.png"}]
-
-         #_(:health pt)]
-        [:span.pt-mn.p-8 [:img.pt-icn {:src "./img/coin_gold.png"}]
-         (:balance pt)]]]]
-     [:div.pt-stats
-      (let [m (get-in (get o "temperature") [0 :value :Quantity :value])]
-        [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/thermometer.png"}] [stat-widget m]])
-
-      (let [m (get-in (get o "pressure")    [0 :value :Quantity :value])]
-        [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/tonometer.png"}] [stat-widget m]])
 
 
-      (let [m (get-in (get o "sugar")    [0 :value :Quantity :value])]
-        [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/sugar.png"}] [stat-widget m]])
+(defn drag-golden [_ _]
+  (let [pt-state (rf/subscribe [::model/selected-pt])]
+    (fn [pt obs]
+      (let [o (group-by #(get-in % [:code :coding 0 :code]) obs)
+            death? (get-in pt [:deceased :boolean])
+            d death?]
+        [:div.rpgui-container.pos-initial.drag.p-8.pt
+        {:on-click #(rf/dispatch [::model/select-pt pt obs])
+         :class (if death?
+                  "framed"
+                  (if (= (:id pt) (:id (:pt @pt-state)))
+                    "framed-golden-2"
+                    "framed-golden"))}
+        [:div.flex.pt-10
+         [:img.pt-monitor (if death?
+                            {:src "./img/flatline.gif"}
+                            {:src "./img/heartbeat.gif"})]
+         [:div
+          [:h3 {:style {:margin "0", :margin-bottom "5px"}} (get-in pt [:name 0 :given 0])]
+          [:span
+           [:span.pt-hp
+            (for [i (range (:health pt))] ^{:key i}
+              [:img.pt-icn {:src "./img/heart.png"}])
+            (for [i (range (- 3 (:health pt)))] ^{:key i}
+              [:img.pt-icn {:src "./img/heart_black.png"}])]
+           [:span.pt-mn.p-8 [:img.pt-icn {:src "./img/coin_gold.png"}]
+            (:balance pt)]]]]
+        [:div.pt-stats
+         (let [m (get-in (get o "temperature") [0 :value :Quantity :value])]
+           [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/thermometer.png"}] [stat-widget m]])
+
+         (let [m (get-in (get o "pressure")    [0 :value :Quantity :value])]
+           [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/tonometer.png"}] [stat-widget m ]])
 
 
-      (let [m (get-in (get o "bacteria")    [0 :value :Quantity :value])]
-        [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/bacteria.png"}] [stat-widget m]])
+         (let [m (get-in (get o "sugar")    [0 :value :Quantity :value])]
+           [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/sugar.png"}] [stat-widget m]])
 
-      (let [m (get-in (get o "diarrhea")    [0 :value :Quantity :value])]
-        [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/diarrhea.png"}] [stat-widget m]])
 
-      ]]))
+         (let [m (get-in (get o "bacteria")    [0 :value :Quantity :value])]
+           [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/bacteria.png"}] [stat-widget m ]])
+
+         (let [m (get-in (get o "diarrhea")    [0 :value :Quantity :value])]
+           [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/diarrhea.png"}] [stat-widget m]])
+
+         ]]))))
 
 (defn plusify [t] (if (> t 0 ) (str "+" t) t))
 
+
 (defn drug [id m]
-  [:div.ib
-   [dndv/draggable (keyword id)
-    [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable
-     [:h3 (:name m)]
-     [:div.flex
-      [:div.rpgui-icon.empty-slot.tabl-ico
-       [:img.med-img {:src (:image m)
-                      :style {:padding-top "5px"
-                              }
-                      }]]
-      [:div.grow-1
-       [:div.grid-grug
-        [:div {:style {:margin-bottom "5px"}}
-         [:span [:img.pt-icn {:src "./dist/img/radio-on.png"}] (:action-point m)]]
-        [:div {:style {:margin-bottom "5px"}}
-         [:span [:img.pt-icn {:src "./img/coin_gold.png"}]     (:price m)]]
+  (let [pt (rf/subscribe [::model/selected-pt])
+        ds (rf/subscribe [::model/selected-drug])]
+    (fn [id m]
+      [:div.ib
+       [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable
+        {:on-click #(rf/dispatch [::model/select-drug m])}
+        [:h3 (:name m)]
+        [:div.flex
+         [:div.rpgui-icon.empty-slot.tabl-ico
+          [:img.med-img {:src (:image m)}]]
+         [:div.grow-1
+          [:div.grid-grug
+           [:div {:style {:margin-bottom "5px"}}
+            [:span [:img.pt-icn {:src "./dist/img/radio-on.png"}] (:action-point m)]]
+           [:div {:style {:margin-bottom "5px"}}
+            [:span [:img.pt-icn {:src "./img/coin_gold.png"}]     (:price m)]]
 
-        (when-let [t (get-in m [:effects :temperature])]
-          [:div [:span [:img.pt-icn {:src "./img/thermometer.png"}] (plusify t)]])
-        (when-let [t (get-in m [:effects :pressure])]
-          [:div [:span [:img.pt-icn {:src "./img/tonometer.png"}] (plusify t)]])
-        (when-let [t (get-in m [:effects :sugar])]
-          [:div [:span [:img.pt-icn {:src "./img/sugar.png"}] (plusify t)]])
-        (when-let [t (get-in m [:effects :bacteria])]
-          [:div [:span [:img.pt-icn {:src "./img/bacteria.png"}] (plusify t)]])
-        (when-let [t (get-in m [:effects :diarrhea])]
-          [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}] (plusify t)]])]
+           (when-let [t (get-in m [:effects :temperature])]
+             [:div [:span [:img.pt-icn {:src "./img/thermometer.png"}] (plusify t)]])
+           (when-let [t (get-in m [:effects :pressure])]
+             [:div [:span [:img.pt-icn {:src "./img/tonometer.png"}] (plusify t)]])
+           (when-let [t (get-in m [:effects :sugar])]
+             [:div [:span [:img.pt-icn {:src "./img/sugar.png"}] (plusify t)]])
+           (when-let [t (get-in m [:effects :bacteria])]
+             [:div [:span [:img.pt-icn {:src "./img/bacteria.png"}] (plusify t)]])
+           (when-let [t (get-in m [:effects :diarrhea])]
+             [:div [:span [:img.pt-icn {:src "./img/diarrhea.png"}] (plusify t)]])]]]
 
-       ]]]]])
+        (when (= (:id m) (:id @ds))
+          (let [stats   (group-by #(get-in % [:code :coding 0 :code]) (:obs @pt))
+                stats   (reduce-kv (fn [acc k v]
+                                     (assoc acc (keyword k) (get-in v [0 :value :Quantity :value])))
+                                   {} stats)
+                res  (model/apply-stats stats (:effects m))]
+           [:div
+            [:hr]
+            [:p {:style {:text-align "center" :margin 0 :font-size "14px"}} "Эффект"]
+            [:div.pt-stats
+             [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/thermometer.png"}] [stat-widget (:temperature res) ]]
+             [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/tonometer.png"}]   [stat-widget (:pressure res)    ]]
+             [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/sugar.png"}]       [stat-widget (:sugar res)       ]]
+             [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/bacteria.png"}]    [stat-widget (:bacteria res)    ]]
+             [:div.flex.stat-row [:img.pt-icn.stat-icon {:src "./img/diarrhea.png"}]    [stat-widget (:diarrhea res)    ]]]
+            [:button.rpgui-button
+             {:on-click #(rf/dispatch [::model/apply-drug (:pt @pt) m])
+              :style {:width "100%"}}
+             [:span "Применить"]]
+
+            ]))]])))
 
 (defonce state (r/atom {:selected :temperature}))
 
@@ -183,7 +179,7 @@
             (into
              [:<>]
              (for [[id res] mmeds]  ^{:key id}
-               (drug id res)))))]])))
+               [drug id res]))))]])))
 
 
 (defn koika-1 [patient]
@@ -240,17 +236,16 @@
 
         ;; [:div.left-racovina]
         ;; [:div.lab]
-        ;; [:div.wall-blood]
+        ;;[:div.wall-blood]
 
         [:div.fsgrid
          [:div#g-patients
           [:div.flex.around
            (into [:<>]
                  (for [[idx [k v]] (map-indexed vector pts)] ^{:key k}
-                   [dndv/drop-zone (keyword k)
-                    [:div {:class (when (get-in v [:deceased :boolean]) "dsbl")}
+                   [:div {:class (when (get-in v [:deceased :boolean]) "dsbl")}
                      [drag-golden v (get obs k)]
-                     [koika idx v]]]))]]
+                     [koika idx v]]))]]
 
          [:div#g-aidbox
           [aidbox medics ap]]
