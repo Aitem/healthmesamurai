@@ -8,10 +8,7 @@
    [re-dnd.subs] ;; make sure subs are registered
    [app.pages.game.model :as model]))
 
-(defmethod dndv/dropped-widget
- :my-drop-marker
- [_]
-  [:span.my-drop-marker "Drop marker"])
+(defmethod dndv/dropped-widget :my-drop-marker [_] [:div.my-drop-marker ])
 
 (defmethod dndv/dropped-widget
   :dropped-box
