@@ -381,18 +381,25 @@ body, #root
 }
 .tab .pt-icn {
     width: 30px;
+    padding: 5px
 }
 
 .tab .pt-icn:hover {
-}
-
-.tab .pt-icn.active {
     background-color: lightgray;
 }
 
+.tab .pt-icn.active {
+    background-color: #4e4a4e;
+    border: 1px solid #442434;
+}
+
 .img-img-img {
+    border-radius: 3px;
+    border: solid 0.08em transparent;}
+
+.img-img-img:hover {
     border-radius: .5em;
-    border: solid 0.08em #eee;}
+    border: solid 0.08em transparent;}
 
 .fsgrid {
     display: grid;
