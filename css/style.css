@@ -257,6 +257,22 @@ body, #root
     z-index: -1;
 }
 
+.top-door {
+
+    background-image: url(./../img/door.png);
+    width: 143px;
+    height: 154px;
+    background-size: 150px;
+    background-repeat: no-repeat;
+    position: absolute;
+    top: 23px;
+    left: 40%;
+    z-index: -1;
+
+}
+
+
+
 .position-rel {
     position: relative !important;
 }
@@ -311,7 +327,8 @@ body, #root
         ". . .";
 }
 
-#g-patients { grid-area: patients; }
+#g-patients { grid-area: patients;
+              padding-top: 120px;}
 
 #g-aidbox { grid-area: aidbox; }
 
