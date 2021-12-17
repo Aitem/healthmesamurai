@@ -30,6 +30,10 @@ body, #root
     position: initial !important;
 }
 
+.no-border-td {
+    border: none;
+}
+
 .score-right-td {
     border: none;
     width: 60%;
