@@ -47,11 +47,13 @@
 
 (defn stat-widget [s]
   [:div.stat-widget.flex
+   [:span {:style {:margin-right "4px"}} "-"]
    [:div.stat-widget-itm {:class (when (= -2 s) "red" )} ]
    [:div.stat-widget-itm {:class (case s -2 "red" -1 "yellow" "")}  ]
    [:div.stat-widget-itm {:class (case s -2 "red" -1 "yellow" -0 "green" 1 "yellow" 2 "red"  "")}  ]
    [:div.stat-widget-itm {:class (case s  2 "red"  1 "yellow" "")}  ]
-   [:div.stat-widget-itm {:class (when (= 2 s) "red" )}  ]])
+   [:div.stat-widget-itm {:class (when (= 2 s) "red" )}  ]
+   [:span {:style {:margin-left "4px"}} "+"]])
 
 (defn drag-golden [pt obs]
   (let [o (group-by #(get-in % [:code :coding 0 :code]) obs)

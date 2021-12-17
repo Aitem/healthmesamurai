@@ -182,7 +182,8 @@
                 [(first parts) sep (last parts)])
               ;;else, put sep at the back
               [(first parts) (last parts) sep])
-          3 [(first parts) (second parts) sep (last parts)])))
+          3 [(first parts) (second parts) sep (last parts)]
+          )))
      ;;else no dragging going on, return the elements
      dropzone-elements)))
 

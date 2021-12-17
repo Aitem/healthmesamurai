@@ -290,15 +290,14 @@
 (re-frame/reg-event-db
  :dnd/hover
  (fn  [db [_ id drop-zone-id hover-in?]]
-   (let []
-     (if (:mouse-button db)
-       db
-       (if drop-zone-id
-         (update-dz-elt db drop-zone-id id
-                        (fn [e]
-                          (assoc e :status (if hover-in? :hover :idle))))
-         ;;else just a normal draggable
-         (assoc-in db [:dnd/state :draggables id :status] (if hover-in? :hover nil)))))))
+   (if (:mouse-button db)
+     db
+     (if drop-zone-id
+       (update-dz-elt db drop-zone-id id
+                      (fn [e]
+                        (assoc e :status (if hover-in? :hover :idle))))
+       ;;else just a normal draggable
+       (assoc-in db [:dnd/state :draggables id :status] (if hover-in? :hover nil))))))
 
 (re-frame/reg-event-db
  :dnd/start-drag

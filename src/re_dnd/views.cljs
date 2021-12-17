@@ -111,8 +111,8 @@
          overlaps?        (rf/subscribe [:dnd/draggable-overlaps? id])]
      (fn [id body]
        [:div.drop-zone
-        {:id        (str "drop-zone-" (name id))
-         :className (if @overlaps? "highlight" "")}
+        {:id     (str "drop-zone-" (name id))
+         :class  (if @overlaps? "drop-zone-highlight" "")}
         (map (fn [de]
                ^{:key (:id de)}
                [dropped-element id de])
