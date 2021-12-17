@@ -180,8 +180,8 @@ body, #root
 
 #app .game
 {
-    background-image: url(./../img/floor.png);
-    background-size: 30px;
+    background-image: url(./../img/floor_tile2.png);
+    background-size: 90px;
     padding-left:20px;
     padding-right:20px;
     min-width: 740px;
