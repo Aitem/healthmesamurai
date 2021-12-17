@@ -209,8 +209,7 @@
    [:img.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
                   :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
    [:img.koika   {:src "./img/koika.png"}]
-   [:img.tumba   {:src "./img/tumba.png"}]
-   ])
+   [:img.tumba   {:src "./img/tumba.png"}]])
 
 (defn koika [idx patient]
   (let [k (case idx
@@ -227,6 +226,8 @@
        [:div.game.rpgui-container.framed.relative
         (when @drag-box-state [dndv/drag-box])
 
+
+        [:div.top-wall]
         [:div.fsgrid
          [:div#g-patients
           [:div.flex.around
