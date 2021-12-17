@@ -32,7 +32,7 @@
       (let [o (group-by #(get-in % [:code :coding 0 :code]) obs)
             death? (get-in pt [:deceased :boolean])
             d death?]
-        [:div.rpgui-container.pos-initial.drag.p-8.pt.hoverable
+        [:div.rpgui-container.pos-initial.drag.p-8.pt.hoverable.rpgui-cursor-point
         {:on-click #(rf/dispatch [::model/select-pt pt obs])
          :class (if death?
                   "framed"
@@ -211,6 +211,7 @@
 
 (defn koika-3 [patient]
   [:div.pt-koika
+   [:img.a.x4.stul   {:src "./img/stul.png"}]
    [:img.a.x4.tumba   {:src "./img/tumba.png"}]
    [:img.a.x3.patient {:src (str "./img/" (or (:avatar patient) "patient.png"))
                        :class (if (get-in patient [:deceased :boolean]) "deceased" "alive")}]
@@ -230,6 +231,11 @@
        [:div.bottom-left-bordur] [:div.bottom-bordur] [:div.bottom-right-bordur]
        [:div.left-bordur] [:div.right-bordur]
        [:div.top-wall] [:div.top-door] [:div.logo]
+       [:img.a.x4.lab      {:src "./img/lab.png"}]
+       [:img.a.x4.divan    {:src "./img/divan.png"}]
+       [:img.a.x4.aaidbox  {:src "./img/aidbox.png"}]
+       [:img.a.x4.clock    {:src "./img/clock.png"}]
+
        ;; [:div.left-racovina] [:div.lab] [:div.wall-blood]
 
        [:div.flex.around.kik
