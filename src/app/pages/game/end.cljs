@@ -21,7 +21,7 @@
           coll))
 
 (defn calc-stats [patients]
-  (let [{:keys [dead alive]} (group-by (fn [p] (prn p)
+  (let [{:keys [dead alive]} (group-by (fn [p]
                                          (if (get-in p [:deceased :boolean])
                                            :dead
                                            :alive)) patients)
@@ -57,7 +57,29 @@
        ::storage/set {:player practitioner}
        :json/fetch {:uri     (str "/Practitioner/" (:id practitioner))
                     :method  :put
-                    :body    practitioner}})))
+                    :body    practitioner
+                    :success {:event ::get-scoreboard}}})))
+
+
+(rf/reg-event-fx
+  ::get-scoreboard
+  (fn [{:keys [db]} [_ & args]]
+    {:json/fetch {:uri "/$sql"
+                  :method :post
+                  :body "\"select id as id
+                                , resource #>> '{name,0,given,0}' as name
+                                , resource #>> '{stats,total-score}' as score
+                           from practitioner
+                           where resource #>> '{stats,total-score}' is not null
+                           order by (resource #>> '{stats,total-score}')::decimal desc
+                           limit 10\""
+                  :success {:event ::scoreboard}}}))
+
+
+(rf/reg-event-fx
+  ::scoreboard
+  (fn [{:keys [db]} [_ resp]]
+    {:db (assoc db ::scoreboard (:data resp))}))
 
 
 (rf/reg-sub
@@ -70,18 +92,23 @@
   (fn [db _]
     (::stats db)))
 
+(rf/reg-sub
+  ::scoreboard
+  (fn [db _]
+    (::scoreboard db)))
+
 
 (pages/reg-subs-page
  index-page
  (fn [{d :d :as  page} _]
    (let [stats   @(rf/subscribe [:stats])]
      [:div.inner.rpgui-container.framed.relative
+      {:style {:height "calc(100vh - 35px)"}}
       [:h1 {:style {:font-size "250%"}} "Игра окончена!"]
       [:hr.golden]
       [:table {:style {:width "100%"
                        :table-layout :fixed
-                       :border "none"
-                       :text-color "white"}}
+                       :border "none"}}
        [:tbody
         [:tr
          [:td.score-td.score-right-td [:p "Выжило пациентов: "]]
@@ -109,10 +136,40 @@
                  " + " (:money-left stats)
                  ") * " (:score-multiplicator stats) " - " (:dead-patients-money-left stats)
                  " = " (:total-score stats))]]]
-      [:br]
+      [:hr]
+      (let [scoreboard @(rf/subscribe [::scoreboard])]
+        [:div {:style {:padding-left "150px"
+                       :padding-right "150px"}}
+         [:div.rpgui-container.framed-golden.pos-initial
+          {:style {:overflow-y "scroll"
+                   :height "200px"}}
+          [:table {:style {:border "none"}}
+           [:thead
+            [:tr
+             [:th [:p "#"]]
+             [:th [:p "Имя"]]
+             [:th [:p "Счёт"]]]]
+           [:tbody
+            (for [[number {:keys [id name score]}] (map-indexed vector scoreboard)]
+              ^{:key id}
+              [:<>
+               (if (= id (get-in page [:player :id]))
+                 [:tr {:style {:margin "0px"}}
+                  [:td.no-border-td {:style {:margin-bottom "0", :margin-top "0"}}[:hr.golden]]
+                  [:td.no-border-td {:style {:margin-bottom "0", :margin-top "0"}}[:hr.golden]]
+                  [:td.no-border-td {:style {:margin-bottom "0", :margin-top "0"}}[:hr.golden]]]
+                 [:tr {:style {:margin "0px"}}
+                  [:td.no-border-td {:style {:margin-bottom "0", :margin-top "0"}}[:hr]]
+                  [:td.no-border-td {:style {:margin-bottom "0", :margin-top "0"}}[:hr]]
+                  [:td.no-border-td {:style {:margin-bottom "0", :margin-top "0"}}[:hr]]])
+               [:tr {:style {:margin "0px"}}
+                [:td.no-border-td [:p (inc number)]]
+                [:td.no-border-td [:p name]]
+                [:td.no-border-td [:p score]]]])]]]])
+
       [:div.rpgui-center
        [:div {:style {:width "300px" :margin "0 auto"}}]]
-      [:br]
+      [:hr]
       [:div.rpgui-center
        [:button.rpgui-button.rpgui-cursor-default
         {:on-click #(rf/dispatch [::restart])}
