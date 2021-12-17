@@ -235,6 +235,8 @@
         [:div.top-wall]
         [:div.top-door]
 
+        [:div.left-racovina]
+
         [:div.fsgrid
          [:div#g-patients
           [:div.flex.around
