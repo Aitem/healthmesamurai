@@ -156,10 +156,11 @@
              (for [[id res] mmeds]  ^{:key id}
                [drug id res]))))]
        [:div.tab
-        [:img.pt-icn.rpgui-cursor-point.img-img-img {:on-click #(set-fltr :temperature)
-                                                     :title "Температура"
-                                                     :src "./img/thermometer.png"
-                                                     :class (when (= :temperature (:selected @state)) "active")}]
+        [:img.pt-icn.rpgui-cursor-point.img-img-img
+         {:on-click #(set-fltr :temperature)
+          :title "Температура"
+          :src "./img/thermometer.png"
+          :class (when (= :temperature (:selected @state)) "active")}]
         [:img.pt-icn.rpgui-cursor-point.img-img-img {:on-click #(set-fltr :pressure)
                                                      :title "Кровяное давление"
                                                      :src "./img/tonometer.png"
