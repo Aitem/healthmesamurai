@@ -267,6 +267,7 @@
        [:button.rpgui-button.golden
         {:style {:padding-top "0px" :width "370px"}
          :on-click #(rf/dispatch [::model/next-step])}
-        (if (= 10 (:game-step page))
-          [:p {:style {:padding-top "5px"}} "Конец " (:game-step page) "/10"]
-          [:p {:style {:padding-top "5px"}} "Следующий день " (:game-step page) "/10"])]]]]]))
+        (let [all-patients-died (= 3 (count (filter (fn [[k p]] (get-in p [:deceased :boolean])) pts)))]
+          (cond (= 10 (:game-step page)) [:p {:style {:padding-top "5px"}} "Конец " (:game-step page) "/10"]
+                all-patients-died  [:p {:style {:padding-top "5px"}} "Конец " (:game-step page) "/10"]
+                :else [:p {:style {:padding-top "5px"}} "Следующий день " (:game-step page) "/10"]))]]]]]))

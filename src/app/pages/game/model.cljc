@@ -189,14 +189,16 @@
  ::next-step
  (fn [{db :db} [_]]
    (let [nstep (inc (:game-step db))
+         patients (get-in db [:patients])
          result-obs (reduce-kv
                      (fn [acc k pt]
                        (assoc acc k (do-stat-damage pt (get-in db [:observations (:id pt)]) (mk-damage {}))))
-                     {} (get-in db [:patients]))
+                     {} patients)
+         all-died  (= 3 (count (filter (fn [[k p]] (get-in p [:deceased :boolean])) patients)))
          result-pt (reduce-kv
                     (fn [acc k pt]
                       (assoc acc k (do-hp-damage pt (get-in db [:observations (:id pt)]))))
-                    {} (get-in db [:patients]))]
+                    {} patients)]
      (merge
       {:db (-> db
                (assoc :ap {:current (min 10 (+ init-ap (:game-step db)))
@@ -205,5 +207,6 @@
                (assoc :patients     result-pt)
                (update :game-step   inc))
        :dispatch [::synk-state (concat (vals result-obs) (vals result-pt))]}
-      (when (=  (:game-step db) 10)
+      (when (or (=  (:game-step db) 10)
+                all-died)
         {::routing/redirect {:ev :app.pages.game.end/index-page}})))))
