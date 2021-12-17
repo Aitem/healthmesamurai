@@ -60,7 +60,7 @@
             pt-req {:request  {:method "POST" :url "/Patient"}
                     :resource {:name                [{:given [pt-name]}]
                                :balance             30
-                               :health              10
+                               :health              3
                                :gender              pt-gender
                                :generalPractitioner [{:id id :resourceType "Practitioner"}]
                                :avatar              pt-avatar}}]
@@ -75,7 +75,7 @@
               :status "final"
               :code {:coding [{:code   stat
                                :system "urn:observation"}]}
-              :value {:Quantity {:value (- 5 (rand-int 4))}}}})
+              :value {:Quantity {:value 0 #_(- 5 (rand-int 4))}}}})
 
 (defn mk-patient-stats-request
   [patient]

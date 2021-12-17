@@ -83,7 +83,7 @@
     :aidbox aids}))
 
 (defn apply-stats [pt effect]
-  (merge-with (fn [a b] (max 0 (min 5 (+ a b)))) pt effect))
+  (merge-with (fn [a b] (max -2 (min 2 (+ a b)))) pt effect))
 
 (rf/reg-event-fx
  ::apply-drug
@@ -123,11 +123,11 @@
                        :body patient}})))))
 
 (defn mk-damage [_]
-  {:sugar        (* -1 (rand-int 2))
-   :temperature  (* -1 (rand-int 2))
-   :pressure     (* -1 (rand-int 2))
-   :bacteria     (* -1 (rand-int 2))
-   :diarrhea     (* -1 (rand-int 2))})
+  {:sugar        (- 1 (rand-int 3))
+   :temperature  (- 1 (rand-int 3))
+   :pressure     (- 1 (rand-int 3))
+   :bacteria     (- 1 (rand-int 3))
+   :diarrhea     (- 1 (rand-int 3))})
 
 (defn do-stat-damage [pt obs damage]
   (let [stats   (group-by #(get-in % [:code :coding 0 :code]) obs)
@@ -147,7 +147,7 @@
 (defn do-hp-damage [pt obs]
   (let [stats   (group-by #(get-in % [:code :coding 0 :code]) obs)
         stats   (reduce-kv (fn [acc k v] (assoc acc (keyword k) (get-in v [0 :value :Quantity :value]))) {} stats)
-        hp-dmg  (reduce-kv (fn [acc k v] (if (< v 2) (inc acc) acc)) 0 stats)
+        hp-dmg  (reduce-kv (fn [acc k v] (if (or (> v 1) (< v -1)) (inc acc) acc)) 0 stats)
         new-hp  (max 0 (- (:health pt) hp-dmg))]
     (if (< new-hp 1)
       (-> pt

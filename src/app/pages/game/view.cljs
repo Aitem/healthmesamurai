@@ -39,7 +39,13 @@
 (defn stat-color [m d]
   (if d
     "red"
-    (if (> m 2) "green" (if (> m 1) "yellow" "red"))))
+    (case m
+      -2 "red"
+      -1 "yellow"
+      0  "green"
+      1  "yellow"
+      2  "red"
+      "green")))
 
 (defn drag-golden [pt obs]
   (let [o (group-by #(get-in % [:code :coding 0 :code]) obs)
@@ -60,15 +66,15 @@
          (:balance pt)]]]]
      [:div.pt-stats
       (let [m (get-in (get o "temperature") [0 :value :Quantity :value])]
-        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/thermometer.png"}]   m "/5 temperature"]])
+        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/thermometer.png"}]   m " temperature"]])
       (let [m (get-in (get o "pressure")    [0 :value :Quantity :value])]
-        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/tonometer.png"}]     m "/5 pressure"]])
+        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/tonometer.png"}]     m " pressure"]])
       (let [m (get-in (get o "sugar")       [0 :value :Quantity :value])]
-        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/sugar.png"}]         m "/5 sugar"]])
+        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/sugar.png"}]         m " sugar"]])
       (let [m (get-in (get o "bacteria")    [0 :value :Quantity :value])]
-        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/bacteria.png"}]     m "/5 bacteria"]])
+        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/bacteria.png"}]     m " bacteria"]])
       (let [m (get-in (get o "diarrhea")    [0 :value :Quantity :value])]
-        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/diarrhea.png"}]      m "/5 diarrhea"]])]]))
+        [:div [:span.stat-row {:class (stat-color m d)} [:img.pt-icn {:src "./img/diarrhea.png"}]      m " diarrhea"]])]]))
 
 (defn plusify [t] (if (> t 0 ) (str "+" t) t))
 
