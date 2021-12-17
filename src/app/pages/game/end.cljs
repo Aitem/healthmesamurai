@@ -7,10 +7,13 @@
 
 (def index-page ::index-page)
 
+
 (rf/reg-event-fx
  ::restart
- (fn [{db :db} [evid _]]
-   {::routing/redirect {:ev :app.pages.index.model/index-page}}))
+ (fn [{db :db} [_]]
+   ;; restore hp
+   ;; restore stats
+   {:dispatch [:app.pages.index.model/prepare-patients {:data (:player db)}]}))
 
 (defn score-calculator
   [keyword coll]

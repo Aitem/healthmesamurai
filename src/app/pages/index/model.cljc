@@ -48,26 +48,34 @@
                  :req-id evid}}))
 
 
-(defn mk-patient-batch-req [{id :id :as practitioner}]
-  (loop [free-avatars pt-avatars
-         free-names   pt-names
-         patients     []]
-    (if (= 3 (count patients))
-      patients
-      (let [pt-gender (rand-nth genders)
-            pt-avatar (rand-nth (vec (get free-avatars pt-gender)))
-            pt-name   (rand-nth (vec (get free-names pt-gender)))
-            pt-req {:request  {:method "POST" :url "/Patient"}
-                    :resource {:name                [{:given [pt-name]}]
-                               :balance             30
-                               :health              3
-                               :gender              pt-gender
-                               :generalPractitioner [{:id id :resourceType "Practitioner"}]
-                               :avatar              pt-avatar}}]
-        (recur
-          (update free-avatars pt-gender disj pt-avatar)
-          (update free-names pt-gender disj pt-name)
-          (conj patients pt-req))))))
+(defn mk-patient-batch-req [{id :id :as practitioner} pts]
+  (let [pts (vals pts)]
+    (loop [free-avatars pt-avatars
+           free-names   pt-names
+           patients     []
+           idx          0]
+      (if (= 3 (count patients))
+        patients
+        (let [pt-gender (rand-nth genders)
+              pt-avatar (rand-nth (vec (get free-avatars pt-gender)))
+              pt-name   (rand-nth (vec (get free-names pt-gender)))
+              pt-req {:request  {:method (if (nth pts idx)
+                                           "PUT"
+                                           "POST")
+                                 :url (if (nth pts idx)
+                                        (str "/Patient/" (:id (nth pts idx)))
+                                        "/Patient")}
+                      :resource {:name                [{:given [pt-name]}]
+                                 :balance             30
+                                 :health              3
+                                 :gender              pt-gender
+                                 :generalPractitioner [{:id id :resourceType "Practitioner"}]
+                                 :avatar              pt-avatar}}]
+          (recur
+           (update free-avatars pt-gender disj pt-avatar)
+           (update free-names pt-gender disj pt-name)
+           (conj patients pt-req)
+           (inc idx)))))))
 
 (defn stat-builder [patient stat]
   {:request {:method "post" :url "/Observation"}
@@ -87,13 +95,14 @@
 
 (rf/reg-event-fx
  ::prepare-patients
- (fn [{db :db} [evid {practitioner :data}]]
-   {::storage/set {:player practitioner}
-    :json/fetch {:uri "/"
-                 :method :post
-                 :body {:resourceType "Bundle"
-                        :entry (mk-patient-batch-req practitioner)}
-                 :success {:event ::save-init-data}}}))
+ (fn [{db :db} [evid {practitioner :data} ]]
+   (let [pts (:patients db)]
+     {::storage/set {:player practitioner}
+      :json/fetch {:uri "/"
+                   :method :post
+                   :body {:resourceType "Bundle"
+                          :entry (mk-patient-batch-req practitioner pts)}
+                   :success {:event ::save-init-data}}})))
 
 (rf/reg-event-fx
  ::save-init-data
