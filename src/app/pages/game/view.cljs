@@ -55,7 +55,7 @@
      {:class (if death? "framed" "framed-golden")}
      [:div.flex.pt-10
       [:img.pt-monitor (if death?
-                         {:src "./img/red-monitor.png"}
+                         {:src "./img/flatline.gif"}
                          {:src "./img/heartbeat.gif"})]
       [:div
        [:h3 {:style {:margin "0", :margin-bottom "5px"}} (get-in pt [:name 0 :given 0])]
