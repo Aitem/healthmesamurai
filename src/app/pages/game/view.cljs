@@ -69,6 +69,8 @@
         [:span.pt-hp
          (for [i (range (:health pt))] ^{:key i}
            [:img.pt-icn {:src "./img/heart.png"}])
+         (for [i (range (- 3 (:health pt)))] ^{:key i}
+           [:img.pt-icn {:src "./img/heart_black.png"}])
          #_[:img.pt-icn {:src "./img/heart.png"}]
          #_[:img.pt-icn {:src "./img/heart.png"}]
 
