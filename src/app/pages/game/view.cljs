@@ -145,15 +145,15 @@
       [:div.rpgui-container.framed-golden.pos-initial
        [:div.tab
         [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :temperature)
-                      :src "./img/thermometer.png" :class (when (= :temperature (:selected @state)) "active")}]
+                                         :src "./img/thermometer.png" :class (when (= :temperature (:selected @state)) "active")}]
         [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :pressure)
-                      :src "./img/tonometer.png"   :class (when (= :pressure    (:selected @state)) "active")}]
+                                         :src "./img/tonometer.png"   :class (when (= :pressure    (:selected @state)) "active")}]
         [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :sugar)
-                      :src "./img/sugar.png"       :class (when (= :sugar       (:selected @state)) "active")}]
+                                         :src "./img/sugar.png"       :class (when (= :sugar       (:selected @state)) "active")}]
         [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :bacteria)
-                      :src "./img/bacteria.png"   :class (when (= :bacteria    (:selected @state)) "active")}]
+                                         :src "./img/bacteria.png"   :class (when (= :bacteria    (:selected @state)) "active")}]
         [:img.pt-icn.rpgui-cursor-point {:on-click #(set-fltr :diarrhea)
-                      :src "./img/diarrhea.png"    :class (when (= :diarrhea    (:selected @state)) "active")}]]
+                                         :src "./img/diarrhea.png"    :class (when (= :diarrhea    (:selected @state)) "active")}]]
        [:hr]
        [:div.apps
         (into [:<>]
@@ -180,10 +180,15 @@
                                 ;;#(get-in (val %) [:action-point])
                                 #(get-in (val %) [:effects (:selected @state)])
                                 )  mmeds)]
-          (into
-           [:<>]
-           (for [[id res] mmeds]  ^{:key id}
-             (drug id res))))]])))
+          (if (empty? mmeds)
+            [:div.rpgui-container.framed.pos-initial.rpgui-cursor-grab-open.drag.rpgui-draggable
+             [:div {:style {:margin-bottom "5px" :color "white"}}
+              [:div "No action points left!" ]]]
+            (into
+             [:<>]
+             (for [[id res] mmeds]  ^{:key id}
+               (drug id res)))))]])))
+
 
 (defn koika-1 [patient]
   [:div
