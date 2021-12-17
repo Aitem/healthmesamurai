@@ -45,7 +45,7 @@
       0  "green"
       1  "yellow"
       2  "red"
-      "green")))
+      "red")))
 
 (defn drag-golden [pt obs]
   (let [o (group-by #(get-in % [:code :coding 0 :code]) obs)
@@ -60,8 +60,13 @@
       [:div
        [:h3 {:style {:margin "0", :margin-bottom "5px"}} (get-in pt [:name 0 :given 0])]
        [:span
-        [:span.pt-hp [:img.pt-icn {:src "./img/heart.png"}]
-         (:health pt)]
+        [:span.pt-hp
+         (for [i (range (:health pt))] ^{:key i}
+           [:img.pt-icn {:src "./img/heart.png"}])
+         #_[:img.pt-icn {:src "./img/heart.png"}]
+         #_[:img.pt-icn {:src "./img/heart.png"}]
+
+         #_(:health pt)]
         [:span.pt-mn.p-8 [:img.pt-icn {:src "./img/coin_gold.png"}]
          (:balance pt)]]]]
      [:div.pt-stats

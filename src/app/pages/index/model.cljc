@@ -75,7 +75,7 @@
               :status "final"
               :code {:coding [{:code   stat
                                :system "urn:observation"}]}
-              :value {:Quantity {:value 0 #_(- 5 (rand-int 4))}}}})
+              :value {:Quantity {:value (- 1 (rand-int 3))}}}})
 
 (defn mk-patient-stats-request
   [patient]
