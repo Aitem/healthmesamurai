@@ -170,7 +170,12 @@ body, #root
     width: 100%;
     height: 120px;
     background-size: 19px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
 }
+
 .position-rel {
     position: relative !important;
 }
