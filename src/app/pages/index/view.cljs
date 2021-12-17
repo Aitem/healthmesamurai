@@ -12,6 +12,7 @@
          emit    (fn [e] (rf/dispatch [::model/practitioner-name (gettext e)]))
          pr-name @(rf/subscribe [::model/practitioner-name])]
      [:div.inner.rpgui-container.framed.relative
+      {:style {:text-align "center"}}
       [:h1 {:style {:font-size "250%"}} "Health me, Samurai!"]
       [:hr.golden]
       [:p "На дворе 2040 год, коронавирус побежден, но появился новый, более опасный вирус, противостояние с которым только началось."]
