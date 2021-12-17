@@ -227,6 +227,7 @@
         (when @drag-box-state [dndv/drag-box])
 
 
+        [:div.top-bordur]
         [:div.top-wall]
         [:div.fsgrid
          [:div#g-patients
