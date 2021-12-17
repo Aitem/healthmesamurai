@@ -155,6 +155,17 @@
           (assoc :deceased {:boolean true}))
       (assoc pt :health new-hp))))
 
+(rf/reg-event-fx
+ ::synk-state
+ (fn [_ [_ resources]]
+   {:json/fetch {:uri "/" :method :post
+                 :body {:resourceType "Bundle"
+                        :entry (map
+                                (fn [r]
+                                  {:request  {:method "PUT" :url  (str "/" (:resourceType r) "/" (:id r))}
+                                   :resource r})
+                                resources)}
+                 :success {:event ::save-init-data}}}))
 
 (rf/reg-event-fx
  ::next-step
@@ -174,6 +185,7 @@
                            :total   nstep})
                (assoc :observations result-obs)
                (assoc :patients     result-pt)
-               (update :game-step   inc))}
+               (update :game-step   inc))
+       :dispatch [::synk-state (concat (vals result-obs) (vals result-pt))]}
       (when (=  (:game-step db) 10)
         {::routing/redirect {:ev :app.pages.game.end/index-page}})))))
