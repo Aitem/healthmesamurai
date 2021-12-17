@@ -24,6 +24,7 @@
           coll))
 
 (defn calc-stats [patients]
+  (prn "->>>>>" patients)
   (let [{:keys [dead alive]} (group-by (fn [p]
                                          (if (get-in p [:deceased :boolean])
                                            :dead
@@ -51,18 +52,29 @@
   index-page
   [(rf/inject-cofx ::storage/get [:player])]
   (fn [{storage :storage  db :db} [pid phase params]]
-    (let [patients (-> db
-                       (get-in [:patients])
-                       vals)
-          stats (calc-stats patients)
-          practitioner (assoc (:player storage) :stats stats)]
-      {:db (assoc db ::stats stats)
-       ::storage/set {:player practitioner}
-       :json/fetch {:uri     (str "/Practitioner/" (:id practitioner))
-                    :method  :put
-                    :body    practitioner
-                    :success {:event ::get-scoreboard}}})))
+    {:db (merge db storage)
+     :json/fetch {:uri "/Patient"
+                  :params {:general-practitioner (get-in storage [:player :id])}
+                  :success {:event ::save-patients}}}))
 
+(defn patients-map [resp]
+  (->> resp :data :entry (map :resource)
+       (reduce (fn [acc pt] (assoc acc (:id pt) pt)) {})
+       (into (sorted-map))))
+
+(rf/reg-event-fx
+ ::save-patients
+ (fn [{db :db} [_ resp]]
+   (let [pts (patients-map resp)
+         stats (calc-stats (vals pts))
+         practitioner (assoc (:player db) :stats stats)]
+     {:db (-> db
+              (assoc :patients pts)
+              (assoc ::stats stats))
+      :json/fetch {:uri     (str "/Practitioner/" (:id practitioner))
+                   :method  :put
+                   :body    practitioner
+                   :success {:event ::get-scoreboard}}})))
 
 (rf/reg-event-fx
   ::get-scoreboard
@@ -136,8 +148,7 @@
                  " = " (:total-score stats))]]]
       [:hr]
       (let [scoreboard @(rf/subscribe [::scoreboard])]
-        [:div #_{:style {:padding-left "150px"
-                       :padding-right "150px"}}
+        [:div
          [:div.rpgui-container.framed-golden.pos-initial
           {:style {:overflow-y "scroll"
                    :height "400px"}}
@@ -147,6 +158,10 @@
             (for [[number {:keys [id name score]}] (map-indexed vector scoreboard)]
               ^{:key id}
               [:<>
+               [:tr {:style {:margin "0px"}}
+                [:td.no-border-td [:p (inc number)]]
+                [:td.no-border-td [:p name]]
+                [:td.no-border-td [:p score]]]
                (if (= id (get-in page [:player :id]))
                  [:tr {:style {:margin "0px"}}
                   [:td.no-border-td {:style {:margin-bottom "0", :margin-top "0"}}[:hr.golden]]
@@ -156,10 +171,7 @@
                   [:td.no-border-td {:style {:margin-bottom "0", :margin-top "0"}}[:hr]]
                   [:td.no-border-td {:style {:margin-bottom "0", :margin-top "0"}}[:hr]]
                   [:td.no-border-td {:style {:margin-bottom "0", :margin-top "0"}}[:hr]]])
-               [:tr {:style {:margin "0px"}}
-                [:td.no-border-td [:p (inc number)]]
-                [:td.no-border-td [:p name]]
-                [:td.no-border-td [:p score]]]])]]]])
+               ])]]]])
 
       [:div.rpgui-center
        [:div {:style {:width "300px" :margin "0 auto"}}]]
