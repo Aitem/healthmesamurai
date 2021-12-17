@@ -6,7 +6,7 @@
             [clojure.string :as str]))
 
 (def index-page ::index-page)
-(def init-ap 5)
+(def init-ap 1)
 
 (rf/reg-event-fx
  index-page
